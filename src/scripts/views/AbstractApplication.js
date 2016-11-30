@@ -1,5 +1,4 @@
-import * as THREE from 'three'
-import 'scripts/controls/OrbitControls'
+import 'controls/OrbitControls'
 
 class AbstractApplication{
 

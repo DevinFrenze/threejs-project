@@ -1,4 +1,3 @@
-import * as THREE from 'three'
 import dat from 'dat-gui'
 import WAGNER from '@superguigui/wagner/'
 import AbstractApplication from 'scripts/views/AbstractApplication'

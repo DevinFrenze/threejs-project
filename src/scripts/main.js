@@ -1,4 +1,3 @@
-import * as THREE from 'three'
 import AbstractApplication from 'scripts/views/AbstractApplication'
 const glslify = require('glslify')
 const shaderVert = glslify('./../shaders/custom.vert')

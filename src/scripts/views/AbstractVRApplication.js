@@ -1,6 +1,5 @@
-import * as THREE from 'three'
-import 'scripts/controls/VRControls'
-import 'scripts/effects/VREffect'
+import 'controls/VRControls'
+import 'effects/VREffect'
 import 'webvr-polyfill'
 import WebVRManager from 'webvr-boilerplate'
 

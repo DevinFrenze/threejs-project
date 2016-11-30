@@ -19,7 +19,7 @@ let suffix = 'dev';
 
 let config = {
     resolve: {
-        modulesDirectories: ['src','node_modules','local_modules'],
+        modulesDirectories: ['src','node_modules','node_modules/three/examples/js','local_modules'],
         extensions: ['', '.js'],
         /*root: [
             path.resolve('./src/'),
@@ -106,6 +106,12 @@ module.exports = function configuration(options) {
         new CopyWebpackPlugin([
             {from: 'src/textures',to:'textures'},
         ])
+    );
+
+    plugins.push(
+        new webpack.ProvidePlugin({
+          THREE: 'three/build/three.min.js'
+        })
     );
 
     plugins.push(

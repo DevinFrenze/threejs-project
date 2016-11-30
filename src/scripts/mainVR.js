@@ -1,4 +1,3 @@
-import * as THREE from 'three'
 import AbstractVRApplication from 'scripts/views/AbstractVRApplication'
 
 const glslify = require('glslify')
