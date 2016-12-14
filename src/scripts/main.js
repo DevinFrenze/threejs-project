@@ -11,7 +11,7 @@ class Main extends AbstractApplication {
     var loader = new THREE.FontLoader();
     this.font = loader.parse(font);
     this.createText();
-    this.postProcessing();
+    // this.postProcessing();
     this.animate();
   }
 
@@ -39,6 +39,7 @@ class Main extends AbstractApplication {
   }
 
   postProcessing() {
+    this._composer.passes.forEach(function(pass) { pass.renderToScreen = false; });
     this._glitchPass = new THREE.GlitchPass(128);
     this._glitchPass.renderToScreen = true;
     this._composer.addPass( this._glitchPass );
