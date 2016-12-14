@@ -19,7 +19,7 @@ let suffix = 'dev';
 
 let config = {
     resolve: {
-        modulesDirectories: ['src','node_modules','node_modules/three/examples/js','local_modules'],
+        modulesDirectories: ['src','node_modules','node_modules/three/examples/fonts','node_modules/three/examples/js','local_modules'],
         extensions: ['', '.js'],
         /*root: [
             path.resolve('./src/'),
@@ -69,6 +69,10 @@ let config = {
                 test: /\.(woff|woff2|eot|ttf|svg)$/,
                 exclude: /node_modules/,
                 loader: 'url-loader?limit=100000'
+            },
+            {
+                test: /\.json$/,
+                loader: 'json-loader'
             }
         ]
     }
@@ -110,7 +114,8 @@ module.exports = function configuration(options) {
 
     plugins.push(
         new webpack.ProvidePlugin({
-          THREE: 'three/build/three.min.js'
+          THREE: 'three/build/three.min.js',
+          Stats: 'three/examples/js/libs/stats.min'
         })
     );
 
