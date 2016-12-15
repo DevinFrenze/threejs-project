@@ -27,8 +27,7 @@ class Main extends AbstractApplication {
     textGeo.computeBoundingBox();
 
     const centerOffset = -0.5 * ( textGeo.boundingBox.max.x - textGeo.boundingBox.min.x );
-    const texture = new THREE.TextureLoader().load( 'textures/crate.gif' );
-    const material = new THREE.MeshBasicMaterial({ wireframe: false });
+    const material = this._material = new THREE.MeshBasicMaterial({ wireframe: false });
 
     const textMesh = this._textMesh = new THREE.Mesh( textGeo, material );
     textMesh.position.x = centerOffset;
@@ -48,5 +47,10 @@ class Main extends AbstractApplication {
     }, 1500);
   }
 
+  update() {
+    if (this._material) {
+      this._material.color = Array(3).fill(2* this._audioLevel);
+    }
+  }
 }
 export default Main;

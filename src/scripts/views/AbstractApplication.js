@@ -59,8 +59,8 @@ class AbstractApplication{
       this._audioAnalyser = this._audioContext.createAnalyser();
       this._audioSource.connect(this._audioAnalyser);
 
-      this._dataArray = new Float32Array(this._audioAnalyser.frequencyBinCount);
-      this._audioAnalyser.getFloatTimeDomainData(this._dataArray);
+      this._timeDataArray = new Float32Array(this._audioAnalyser.frequencyBinCount);
+      this._freqDataArray = new Uint8Array(this._audioAnalyser.frequencyBinCount);
       // uncomment the line below for audio through
       // this._audioSource.connect( this._audioContext.destination );
     };
@@ -69,6 +69,14 @@ class AbstractApplication{
     navigator.getUserMedia( { audio: true }, gotStream, function() { console.log('error'); } );
   }
 
+  updateAudio() {
+    this._audioAnalyser.getFloatTimeDomainData(this._timeDataArray);
+    this._audioAnalyser.getByteFrequencyData(this._freqDataArray);
+    const sum = this._freqDataArray.reduce((sum, val) => sum + val, 0);
+    const averageLevel = sum / this._freqDataArray.length;
+    const normalizedLevel = averageLevel / 256;
+    this._audioLevel = normalizedLevel;
+  }
 
   onWindowResize() {
     this._camera.aspect = window.innerWidth / window.innerHeight;
@@ -82,13 +90,18 @@ class AbstractApplication{
     requestAnimationFrame( this.animate.bind(this) );
 
     if (this._audioAnalyser) {
-      this._audioAnalyser.getFloatTimeDomainData(this._dataArray);
+      this.updateAudio();
     }
 
     this._controls.update();
+
+    this.update();
+
     this._composer.render( this._scene, this._camera );
     this._stats.update();
   }
+
+  update() { }
 
 }
 export default AbstractApplication;
