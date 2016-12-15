@@ -9,6 +9,8 @@ import 'postprocessing/ShaderPass';
 class AbstractApplication{
 
   constructor(){
+    this.hookupAudio();
+
     this._stats = new Stats();
 
     this._camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 1, 1000 );
@@ -35,7 +37,6 @@ class AbstractApplication{
     this._controls.enableZoom = false;
 
     window.addEventListener( 'resize', this.onWindowResize.bind(this), false );
-
   }
 
   get renderer(){
@@ -50,6 +51,24 @@ class AbstractApplication{
     return this._scene;
   }
 
+  hookupAudio() {
+    const gotStream = (stream) => {
+      window.AudioContext = window.AudioContext || window.webkitAudioContext;
+      this._audioContext = new window.AudioContext();
+      this._audioSource= this._audioContext.createMediaStreamSource( stream );
+      this._audioAnalyser = this._audioContext.createAnalyser();
+      this._audioSource.connect(this._audioAnalyser);
+
+      this._dataArray = new Float32Array(this._audioAnalyser.frequencyBinCount);
+      this._audioAnalyser.getFloatTimeDomainData(this._dataArray);
+      // uncomment the line below for audio through
+      // this._audioSource.connect( this._audioContext.destination );
+    };
+
+    navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia;
+    navigator.getUserMedia( { audio: true }, gotStream, function() { console.log('error'); } );
+  }
+
 
   onWindowResize() {
     this._camera.aspect = window.innerWidth / window.innerHeight;
@@ -61,6 +80,10 @@ class AbstractApplication{
 
   animate(timestamp) {
     requestAnimationFrame( this.animate.bind(this) );
+
+    if (this._audioAnalyser) {
+      this._audioAnalyser.getFloatTimeDomainData(this._dataArray);
+    }
 
     this._controls.update();
     this._composer.render( this._scene, this._camera );
