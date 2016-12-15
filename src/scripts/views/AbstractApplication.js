@@ -57,7 +57,12 @@ class AbstractApplication{
       this._audioContext = new window.AudioContext();
       this._audioSource= this._audioContext.createMediaStreamSource( stream );
       this._audioAnalyser = this._audioContext.createAnalyser();
-      this._audioSource.connect(this._audioAnalyser);
+
+      const filter = this._audioContext.createBiquadFilter();
+      this._audioSource.connect(filter);
+      filter.connect(this._audioAnalyser);
+      filter.type = 'highpass';
+      filter.frequency.value = 8000;
 
       this._timeDataArray = new Float32Array(this._audioAnalyser.frequencyBinCount);
       this._freqDataArray = new Uint8Array(this._audioAnalyser.frequencyBinCount);

@@ -49,7 +49,8 @@ class Main extends AbstractApplication {
 
   update() {
     if (this._material) {
-      this._material.color = Array(3).fill(2* this._audioLevel);
+      const level = this._audioLevel;
+      this._material.color = Array(3).fill(7 * Math.pow(this._audioLevel, 2));
     }
   }
 }
