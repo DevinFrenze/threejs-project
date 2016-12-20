@@ -3,19 +3,38 @@ import 'utils/GeometryUtils'
 import 'shaders/DigitalGlitch';
 import 'postprocessing/GlitchPass';
 
+import dat from 'dat-gui';
 import font from 'droid/droid_sans_regular.typeface.json'
 
 class Main extends AbstractApplication {
   constructor(){
     super();
-    var loader = new THREE.FontLoader();
-    this.font = loader.parse(font);
     this.createText();
+    localStorage.setItem('color', [0.5, 0.5, 0.5]);
     // this.postProcessing();
+    this.initGui();
     this.animate();
   }
 
+  initGui() {
+    // changing the scene control needs to change local storage
+    // changing local storage need to change the actual value
+    const sceneControl = function() {
+      this.color = [ 255, 255, 255 ];
+    };
+
+    this._sceneControl = new sceneControl();
+    const gui = new dat.GUI();
+
+    const colorControl = gui.addColor(this._sceneControl, 'color'); 
+    colorControl.onChange(function(value) {
+      localStorage.setItem('color', value);
+    });
+  }
+
   createText() {
+    var loader = new THREE.FontLoader();
+    this.font = loader.parse(font);
     const size = 200;
     const textGeo = new THREE.TextGeometry("RBD", {
       font: this.font,
@@ -49,9 +68,10 @@ class Main extends AbstractApplication {
 
   update() {
     if (this._material) {
-      const level = this._audioLevel;
-      this._material.color = Array(3).fill(7 * Math.pow(this._audioLevel, 2));
+      const level = 7 * Math.pow(this._audioLevel, 2);
+      this._material.color = localStorage.getItem('color').split(',').map((v) => level * parseInt(v) / 255);
     }
   }
 }
+
 export default Main;

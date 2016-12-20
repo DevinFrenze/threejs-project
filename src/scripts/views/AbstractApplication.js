@@ -9,34 +9,39 @@ import 'postprocessing/ShaderPass';
 class AbstractApplication{
 
   constructor(){
-    this.hookupAudio();
-
-    this._stats = new Stats();
-
+    // init camera and scene
+    this._scene = new THREE.Scene();
     this._camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 1, 1000 );
     this._camera.position.z = 400;
 
-    this._scene = new THREE.Scene();
-
+    // setup and append renderer
     this._renderer = new THREE.WebGLRenderer({ antialias: true });
     this._renderer.setPixelRatio( window.devicePixelRatio );
     this._renderer.setSize( window.innerWidth, window.innerHeight );
     document.body.appendChild( this._renderer.domElement );
+
+    //  setup and append statistics
+    this._stats = new Stats();
     document.body.appendChild( this._stats.dom );
 
+    // setup post processing chain
     this._composer = new THREE.EffectComposer( this._renderer );
-
     this._renderPass = new THREE.RenderPass( this._scene, this._camera ) 
     this._renderPass.renderToScreen = true;
     this._composer.addPass(this._renderPass);
 
+    // enable controls so user can navigate scene
     this._controls = new THREE.OrbitControls( this._camera, this._renderer.domElement );
-    // this._controls.addEventListener( 'change', render ); // add this only if there is no animation loop (requestAnimationFrame)
     this._controls.enableDamping = true;
     this._controls.dampingFactor = 0.25;
     this._controls.enableZoom = false;
 
+    // initialize audio
+    this.initAudio();
+
+    // bind listeners
     window.addEventListener( 'resize', this.onWindowResize.bind(this), false );
+    window.addEventListener( 'storage', this.onStorageChange.bind(this), false);
   }
 
   get renderer(){
@@ -51,7 +56,7 @@ class AbstractApplication{
     return this._scene;
   }
 
-  hookupAudio() {
+  initAudio() {
     const gotStream = (stream) => {
       window.AudioContext = window.AudioContext || window.webkitAudioContext;
       this._audioContext = new window.AudioContext();
@@ -89,6 +94,11 @@ class AbstractApplication{
 
     this._renderer.setSize( window.innerWidth, window.innerHeight );
     this._composer.setSize( window.innerWidth, window.innerHeight );
+  }
+
+  onStorageChange(e) {
+    console.log(e);
+    console.log(localStorage);
   }
 
   animate(timestamp) {
