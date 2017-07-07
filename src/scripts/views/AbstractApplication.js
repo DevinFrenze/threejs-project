@@ -1,4 +1,4 @@
-import 'controls/OrbitControls'
+import 'controls/OrbitControls';
 
 import 'shaders/CopyShader';
 import 'postprocessing/EffectComposer';
@@ -26,7 +26,7 @@ class AbstractApplication{
 
     // setup post processing chain
     this._composer = new THREE.EffectComposer( this._renderer );
-    this._renderPass = new THREE.RenderPass( this._scene, this._camera ) 
+    this._renderPass = new THREE.RenderPass( this._scene, this._camera ); 
     this._renderPass.renderToScreen = true;
     this._composer.addPass(this._renderPass);
 
@@ -97,8 +97,8 @@ class AbstractApplication{
   }
 
   onStorageChange(e) {
-    console.log(e);
-    console.log(localStorage);
+    // console.log(e);
+    // console.log(localStorage);
   }
 
   animate(timestamp) {

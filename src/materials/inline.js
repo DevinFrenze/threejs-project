@@ -9,8 +9,8 @@
   a babel transform.
  */
 
-const hmr = require('three-hmr/three-hmr')
-const cache = hmr.cache(__filename)
+const hmr = require('three-hmr/three-hmr');
+const cache = hmr.cache(__filename);
 
 const vertexShader = `
   attribute vec4 position;
@@ -22,7 +22,7 @@ const vertexShader = `
     vUv = uv;
     gl_Position = projectionMatrix * modelViewMatrix * position;
   }
-`.trim()
+`.trim();
 
 const fragmentShader = `
   precision mediump float;
@@ -43,21 +43,21 @@ const fragmentShader = `
     vec3 color = mix(colorA, colorB, d);
     gl_FragColor = vec4(color, 1.0);
   }
-`.trim()
+`.trim();
 
 module.exports = function (opt) {
   const material = new THREE.RawShaderMaterial({
     vertexShader, fragmentShader
-  })
-  hmr.enable(cache, material)
-  return material
-}
+  });
+  hmr.enable(cache, material);
+  return material;
+};
 
 if (module.hot) {
   module.hot.accept(err => {
-    if (err) throw errr
-  })
+    if (err) throw errr;
+  });
   hmr.update(cache, {
     vertexShader, fragmentShader
-  })
+  });
 }

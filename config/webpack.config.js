@@ -21,18 +21,18 @@ let config = {
     resolve: {
         modulesDirectories: ['src','node_modules','node_modules/three/examples/fonts','node_modules/three/examples/js','local_modules'],
         extensions: ['', '.js'],
-        /*root: [
+        root: [
             path.resolve('./src/'),
-        ],*/
+        ],
     },
     module: {
-        /*preLoaders: [
+        preLoaders: [
             {
                 test: /\.js$/,
                 exclude: [/node_modules/,/local_modules/],
                 loader: 'eslint-loader'
             }
-        ],*/
+        ],
         // allow local glslify/browserify config to work
         postLoaders: [
             {
@@ -139,10 +139,8 @@ module.exports = function configuration(options) {
             path: outputPath,
             filename: '[name]' + hash + '.js'
         },
-        /*context: __dirname,
-        node: {
-            __filename: true
-        },*/
+        /*context: __dirname,*/
+        node: { __filename: true },
         plugins: plugins
     });
 };

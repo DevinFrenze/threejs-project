@@ -1,4 +1,4 @@
-import AbstractVRApplication from 'scripts/views/AbstractVRApplication'
+import AbstractVRApplication from 'scripts/views/AbstractVRApplication';
 
 class Main extends AbstractVRApplication {
   constructor(){

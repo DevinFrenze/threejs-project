@@ -1,7 +1,7 @@
-import 'controls/VRControls'
-import 'effects/VREffect'
-import 'webvr-polyfill'
-import WebVRManager from 'webvr-boilerplate'
+import 'controls/VRControls';
+import 'effects/VREffect';
+import 'webvr-polyfill';
+import WebVRManager from 'webvr-boilerplate';
 
 class AbstractVRApplication{
   constructor(){
