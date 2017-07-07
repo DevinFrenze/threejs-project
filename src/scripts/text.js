@@ -5,7 +5,7 @@ class Text {
   constructor(text = "Test Text", parameters) {
     var loader = new THREE.FontLoader();
     this._font = loader.parse(font);
-    const size = 128;
+    const size = 64;
 
     this._textGeo = new THREE.TextGeometry(text, _.merge({
       font: this._font,

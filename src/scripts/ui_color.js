@@ -1,28 +1,33 @@
 class UIColor {
-  constructor(name = 'color', r = 255, g = 255, b = 255) {
-    // change to rgb object
+  constructor(gui, name = 'rgbColor', r = 255, g = 255, b = 255, remote = false) {
     this._name = name;
-    this.color = [r, g, b];
+    this[name] = [ r, g, b ];
+    this._colorControl = gui.addColor(this, this._name); 
+    if (remote) removeControl();
+  }
+
+  get color() {
+    return this[this._name];
+  }
+
+  toFloat() {
+    return this.color.map((v) => v / 255);
+  }
+
+  remoteControl() {
     localStorage.setItem(this._name, this.color);
-    window.addEventListener( 'storage', this.onStorageChange.bind(this), false);
-  }
 
-  onStorageChange() {
-    console.log('on storage change');
-    console.log(localStorage);
-  }
-
-  addToGui(gui) {
-    const control = gui.addColor(this, this._name); 
-    control.onChange((value) => {
-      console.log('HI');
-      console.log(value);
-      // localStorage.setItem(this._name, value);
+    this._colorControl.onChange((value) => {
+      localStorage.setItem(this._name, value);
     });
-  }
 
-  toFloat(level) {
-    return localStorage.getItem(this._name).split(',').map((v) => level * parseInt(v) / 255);
+    onStorageChange = () => {
+      let color = localStorage.getItem(this._name);
+      color = color.split(',').map((v) => parseInt(v));
+      this._colorControl.setValue(color);
+    };
+
+    window.addEventListener( 'storage', onStorageChange, false);
   }
 }
 
