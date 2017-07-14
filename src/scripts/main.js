@@ -1,13 +1,13 @@
 import AbstractApplication from 'scripts/views/AbstractApplication';
 import 'utils/GeometryUtils';
-import Text from 'scripts/text';
-import UIColor from 'scripts/ui_color';
+import Text from 'scripts/objects/text';
+import UIColor from 'scripts/ui/ui_color';
 
 import 'shaders/DigitalGlitch';
 import 'postprocessing/GlitchPass';
 
-import AudioAnalyser from 'scripts/audioAnalyser';
-import Controls from 'scripts/Controls';
+import AudioAnalyser from 'scripts/plugins/audioAnalyser';
+import Controls from 'scripts/controls/Controls';
 
 class Main extends AbstractApplication {
   constructor(){
