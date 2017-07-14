@@ -5,6 +5,7 @@ import 'postprocessing/MaskPass';
 import 'postprocessing/ShaderPass';
 
 class AbstractApplication{
+  /* manages and initializes scene, camera, renderer, and render chain (composer) */
 
   constructor(){
     this._scene = new THREE.Scene();
@@ -16,10 +17,11 @@ class AbstractApplication{
     );
     this._camera.position.z = 400;
 
+    this._updateComponents = [];
+
     this.initRenderer();
     this.initRenderChain();
     window.addEventListener( 'resize', this.onWindowResize.bind(this), false );
-    // window.addEventListener( 'storage', this.onStorageChange.bind(this), false);
   }
 
   initRenderer() {
@@ -42,6 +44,9 @@ class AbstractApplication{
     this.composer.addPass( pass );
   }
 
+  addToScene(obj) {
+    this.scene.add(obj);
+  }
 
   onWindowResize() {
     this.camera.aspect = window.innerWidth / window.innerHeight;
@@ -57,7 +62,14 @@ class AbstractApplication{
     this.composer.render( this.scene, this.camera );
   }
 
-  update() {}
+  subscribeToUpdate(component) {
+    this._updateComponents.push(component);
+  }
+
+  update() {
+    this._updateComponents.forEach((component) => component.update());
+  }
+
   get camera()    { return this._camera; }
   get composer()  { return this._composer; }
   get renderer()  { return this._renderer; }

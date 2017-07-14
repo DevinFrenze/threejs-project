@@ -1,5 +1,5 @@
 class AudioAnalyser {
-  constructor(audioThrough = false) {
+  constructor() {
     const gotStream = (stream) => {
       window.AudioContext = window.AudioContext || window.webkitAudioContext;
       this._audioContext = new window.AudioContext();
@@ -14,10 +14,6 @@ class AudioAnalyser {
 
       this._timeDataArray = new Float32Array(this._audioAnalyser.frequencyBinCount);
       this._freqDataArray = new Uint8Array(this._audioAnalyser.frequencyBinCount);
-
-      if (audioThrough) {
-        this._audioSource.connect( this._audioContext.destination );
-      }
     };
 
     navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia;
@@ -34,6 +30,8 @@ class AudioAnalyser {
       this._audioLevel = normalizedLevel;
     }
   }
+
+  get level() { return this._audioLevel || 0; }
 }
 
 export default AudioAnalyser;

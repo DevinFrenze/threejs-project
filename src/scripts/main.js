@@ -12,11 +12,12 @@ import Controls from 'scripts/Controls';
 class Main extends AbstractApplication {
   constructor(){
     super();
-    this._updateComponents = [];
 
     this.initGui();
+    this.initNavigation();
     this.initScene();
-    this.initEffects();
+    // this.initAudioAnalyser();
+    // this.initEffects();
     this.animate();
   }
 
@@ -27,7 +28,9 @@ class Main extends AbstractApplication {
     const stats = new Stats();
     document.body.appendChild( stats.dom );
     this.subscribeToUpdate(stats);
-
+  }
+  
+  initNavigation() {
     const controls = new Controls(this.camera, this.renderer.domElement );
     this.subscribeToUpdate(controls);
   }
@@ -35,7 +38,12 @@ class Main extends AbstractApplication {
   initScene() {
     this._material = new THREE.MeshBasicMaterial({ wireframe: false });
     const textMesh = new Text().getMesh(this._material);
-    this.scene.add(textMesh);
+    this.addToScene(textMesh);
+  }
+
+  initAudioAnalyser() {
+    this._audioAnalyser = new AudioAnalyser();
+    this.subscribeToUpdate(this._audioAnalyser);
   }
 
   initEffects() {
@@ -47,14 +55,12 @@ class Main extends AbstractApplication {
   }
 
   update() {
-    this._material.color = this._uiColor.toFloat();
-
     super.update();
-    this._updateComponents.forEach((component) => component.update());
-  }
 
-  subscribeToUpdate(component) {
-    this._updateComponents.push(component);
+    // const audioLevel = this._audioAnalyser.level;
+    // this._material.color = this._uiColor.toFloat().map((v) => v * audioLevel);
+
+    this._material.color = this._uiColor.toFloat();
   }
 }
 
