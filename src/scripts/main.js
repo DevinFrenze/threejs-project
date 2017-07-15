@@ -36,9 +36,21 @@ class Main extends AbstractApplication {
   }
 
   initScene() {
+    // const textMesh = new Text().getMesh(this._material);
+    // this.addToScene(textMesh);
+
     this._material = new THREE.MeshBasicMaterial({ wireframe: false });
-    const textMesh = new Text().getMesh(this._material);
-    this.addToScene(textMesh);
+    const icoGeometry = new THREE.IcosahedronGeometry(100, 0);
+    this.addToScene(new THREE.Mesh(icoGeometry, this._material));
+
+    const wireMaterial = new THREE.MeshBasicMaterial({
+      wireframe: true,
+      wireframeLinewidth: 10, // not working
+      opacity: 0.5,           // not working
+      color: "#000000"
+    });
+    const icoGeometryWireframe = new THREE.IcosahedronGeometry(100, 0);
+    this.addToScene(new THREE.Mesh(icoGeometry, wireMaterial));
   }
 
   initAudioAnalyser() {
