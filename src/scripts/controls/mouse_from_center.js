@@ -1,7 +1,8 @@
 import 'controls/OrbitControls';
 
 class Controls {
-  constructor(camera, options = { speed: 10, dampingFactor: 0.25 }) {
+  constructor(camera, options = { enableDamping: true, dampingFactor: 0.25, enableZoom: false }) {
+    this._controls = new THREE.OrbitControls(camera, domElement);
     const keys = Object.keys(options);
     /*
     for (let i = 0; i < keys.length; i++) {
