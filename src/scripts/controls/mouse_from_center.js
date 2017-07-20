@@ -1,40 +1,45 @@
-import 'controls/OrbitControls';
+const {
+  Quaternion,
+  Vector3
+} = THREE;
 
 class Controls {
-  constructor(camera, options = { enableDamping: true, dampingFactor: 0.25, enableZoom: false }) {
-    this._controls = new THREE.OrbitControls(camera, domElement);
-    const keys = Object.keys(options);
-    /*
-    for (let i = 0; i < keys.length; i++) {
-      this._controls[keys[i]] = options[keys[i]];
-    }
-    */
-
-    document.onmousemove = this.handleMouseMove;
-    window.addEventListener('resize'), this.onWindowResize, false);
-
-    this.x = this.y = 0;
+  constructor(scene, speed = 1) {
+    this.scene = scene;
+    this.mouse = {};
+    this.mouse.x = this.mouse.y = 0;
     this.onWindowResize();
-  };
+    this.speed = speed / 10000;
 
-  handleMouseMove = (e) => {
-    this.x = e.clientX;
-    this.y = e.clientY;
+    document.onmousemove = this.handleMouseMove.bind(this);
+    window.addEventListener('resize', this.onWindowResize.bind(this), false);
   }
 
-  onWindowResize = () => {
+  handleMouseMove(event) {
+    this.mouse.x = event.clientX - this.windowCenterX;
+    this.mouse.y = event.clientY - this.windowCenterY;
+  };
+
+  onWindowResize() {
     this.windowCenterX = window.innerWidth / 2;
     this.windowCenterY = window.innerHeight / 2;
   };
 
-  getVectorFromCenter() {
-    return {
-      x: this.x - this.windowCenterX,
-      y: this.y - this.windowCenterY
-    };
-  }
-
   update() {
+    const { x, y } = this.mouse;
+
+    let rotationAxis = new Vector3(y, x, 0);
+    const length = rotationAxis.length();
+    rotationAxis = rotationAxis.normalize();
+
+    let quaternionDelta = new Quaternion();
+    quaternionDelta.setFromAxisAngle(rotationAxis, length * this.speed);
+
+    const quaternionProduct = new Quaternion();
+    quaternionProduct.multiplyQuaternions( quaternionDelta, this.scene.quaternion );
+    quaternionProduct.normalize();
+
+    this.scene.setRotationFromQuaternion( quaternionProduct );
   }
 }
 

@@ -7,7 +7,7 @@ import 'shaders/DigitalGlitch';
 import 'postprocessing/GlitchPass';
 
 import AudioAnalyser from 'scripts/plugins/audioAnalyser';
-import Controls from 'scripts/controls/Controls';
+import Controls from 'scripts/controls/mouse_from_center';
 
 class Main extends AbstractApplication {
   constructor(){
@@ -31,7 +31,7 @@ class Main extends AbstractApplication {
   }
   
   initNavigation() {
-    const controls = new Controls(this.camera, this.renderer.domElement );
+    const controls = new Controls(this.scene);
     this.subscribeToUpdate(controls);
   }
 
