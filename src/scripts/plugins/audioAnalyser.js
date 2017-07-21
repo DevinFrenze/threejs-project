@@ -1,5 +1,5 @@
 class AudioAnalyser {
-  constructor() {
+  constructor(updateContext) {
     const gotStream = (stream) => {
       window.AudioContext = window.AudioContext || window.webkitAudioContext;
       this._audioContext = new window.AudioContext();
@@ -18,6 +18,8 @@ class AudioAnalyser {
 
     navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia;
     navigator.getUserMedia( { audio: true }, gotStream, function() { console.log('audio error'); } );
+
+    updateContext.subscribeToUpdate(this);
   }
 
   update() {

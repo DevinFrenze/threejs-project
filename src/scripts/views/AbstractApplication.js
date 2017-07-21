@@ -7,7 +7,7 @@ import 'postprocessing/ShaderPass';
 class AbstractApplication{
   /* manages and initializes scene, camera, renderer, and render chain (composer) */
 
-  constructor(){
+  constructor(dev = true){
     this._scene = new THREE.Scene();
     this._camera = new THREE.PerspectiveCamera(
         70,                                     // vertial field of view
@@ -19,11 +19,18 @@ class AbstractApplication{
 
     this._updateComponents = [];
 
+    this.initStats();
     this.initRenderer();
     this.initRenderChain();
     window.addEventListener( 'resize', this.onWindowResize.bind(this), false );
   }
 
+  initStats() {
+    const stats = new Stats();
+    document.body.appendChild( stats.dom );
+    this.subscribeToUpdate(stats);
+  }
+  
   initRenderer() {
     this._renderer = new THREE.WebGLRenderer({ antialias: true });
     this._renderer.setPixelRatio( window.devicePixelRatio );
