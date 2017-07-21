@@ -31,16 +31,19 @@ class Main extends AbstractApplication {
   }
   
   initNavigation() {
-    const controls = new Controls(this.scene);
+    const controls = new Controls(this.scene, 1);
     this.subscribeToUpdate(controls);
   }
 
   initScene() {
+    this.camera.position.z = 250;
+    this.camera.position.y = 100;
+
     // const textMesh = new Text().getMesh(this._material);
     // this.addToScene(textMesh);
 
     this._material = new THREE.MeshBasicMaterial({ wireframe: false });
-    const icoGeometry = new THREE.IcosahedronGeometry(100, 0);
+    const icoGeometry = new THREE.IcosahedronGeometry(200, 2);
     this.addToScene(new THREE.Mesh(icoGeometry, this._material));
 
     const wireMaterial = new THREE.MeshBasicMaterial({
@@ -49,7 +52,8 @@ class Main extends AbstractApplication {
       opacity: 0.5,           // not working
       color: "#000000"
     });
-    const icoGeometryWireframe = new THREE.IcosahedronGeometry(100, 0);
+
+    const icoGeometryWireframe = new THREE.IcosahedronGeometry(200, 2);
     this.addToScene(new THREE.Mesh(icoGeometry, wireMaterial));
   }
 

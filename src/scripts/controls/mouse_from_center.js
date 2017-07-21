@@ -9,7 +9,7 @@ class Controls {
     this.mouse = {};
     this.mouse.x = this.mouse.y = 0;
     this.onWindowResize();
-    this.speed = speed / 10000;
+    this.speed = speed / 100000;
 
     document.onmousemove = this.handleMouseMove.bind(this);
     window.addEventListener('resize', this.onWindowResize.bind(this), false);
@@ -28,7 +28,7 @@ class Controls {
   update() {
     const { x, y } = this.mouse;
 
-    let rotationAxis = new Vector3(y, x, 0);
+    let rotationAxis = new Vector3(-y, -x, 0);
     const length = rotationAxis.length();
     rotationAxis = rotationAxis.normalize();
 
