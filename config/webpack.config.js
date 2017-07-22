@@ -109,12 +109,13 @@ module.exports = function configuration(options) {
   plugins.push(
       new CopyWebpackPlugin([
         {from: 'src/textures',to:'textures'},
+        {from: 'src/models',to:'models'},
       ])
       );
 
   plugins.push(
       new webpack.ProvidePlugin({
-        THREE: 'three/build/three.min.js',
+        THREE: 'three/build/three.js',
         Stats: 'three/examples/js/libs/stats.min'
       })
       );
