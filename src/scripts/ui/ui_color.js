@@ -1,52 +1,43 @@
 class UIColor {
-  constructor(gui, name = 'rgbColor', r = 255, g = 255, b = 255, remote = true) {
+  constructor(gui, name = 'rgbColor', color = new THREE.Color(), remote = true) {
     this._name = name;
-    this[name] = [ r, g, b ];
+    this[name] = color.toArray();
+    this._color = color.clone();
     this._colorControl = gui.addColor(this, this._name); 
-    this._color = new THREE.Color();
+    this._remote = remote;
+    this._colorControl.onChange(this.onControllerChange.bind(this));
 
     if (remote) {
-      this.remoteControl();
+      this.onLocalStorageChange();
+      window.addEventListener( 'storage', this.onLocalStorageChange.bind(this), false);
     }
-
-    this._colorControl.onChange((value) => {
-      if (remote) localStorage.setItem(this._name, value);
-      this.updateColorObject();
-    });
-    this.updateColorObject();
   }
 
-  updateColorObject() {
-    this._color.fromArray(this.toFloat());
+  onControllerChange(value) {
+    if (this._remote) localStorage.setItem(this._name, value);
+    this._color.fromArray(this.colorArray.map((v) => v / 255));
   }
 
-  get colorArray() {
-    return this[this._name];
+  onLocalStorageChange() {
+    let color = localStorage.getItem(this._name);
+    if (color) {
+      color = color.split(',').map((v) => parseInt(v));
+      this._colorControl.setValue(color);
+    } else {
+      localStorage.setItem(this._name, this.colorArray);
+    }
+  }
+
+  set color(color) {
+    this._colorControl.setValue(color.toArray().map((c) => c * 255));
   }
 
   get color() {
     return this._color;
   }
 
-  toFloat() {
-    return this.colorArray.map((v) => v / 255);
-  }
-
-  remoteControl() {
-    const onStorageChange = () => {
-      let color = localStorage.getItem(this._name);
-      if (color) {
-        color = color.split(',').map((v) => parseInt(v));
-        this._colorControl.setValue(color);
-        this.updateColorObject();
-      } else {
-        localStorage.setItem(this._name, this.colorArray);
-      }
-    };
-
-    onStorageChange();
-
-    window.addEventListener( 'storage', onStorageChange, false);
+  get colorArray() {
+    return this[this._name];
   }
 }
 

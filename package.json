@@ -29,6 +29,7 @@
     "glslify-hex": "^2.0.1",
     "json-loader": "^0.5.4",
     "lodash": "^4.15.0",
+    "pleasejs": "^0.4.2",
     "raw-loader": "^0.5.1",
     "three": "^0.80.1",
     "transform-loader": "^0.2.3",
