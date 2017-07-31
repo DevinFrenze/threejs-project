@@ -37,6 +37,7 @@ class AbstractApplication{
   }
   
   initRenderer() {
+    // TODO figure out if we need antialias true here, or if we'll just do a shader pass
     this._renderer = new THREE.WebGLRenderer({ antialias: true });
     this._renderer.setPixelRatio( window.devicePixelRatio );
     this._renderer.setSize( window.innerWidth, window.innerHeight );
