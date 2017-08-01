@@ -6,9 +6,9 @@ import 'shaders/DigitalGlitch';
 import 'postprocessing/GlitchPass';
 
 import AudioAnalyser from 'scripts/plugins/audioAnalyser';
-import Controls from 'scripts/controls/mouse_from_center';
 import Text from 'scripts/objects/text';
 import ColorPalette from 'scripts/objects/ColorPalette';
+import Terrain from 'scripts/objects/Terrain';
 
 require( 'loaders/AssimpJSONLoader' );
 
@@ -24,6 +24,8 @@ class Main extends AbstractApplication {
   constructor(dev = true){
     super(dev);
 
+    this.camera.position.set( 1000, 5000, 5000);
+    this.camera.lookAt( new THREE.Vector3(0,0,0) );
     this.initGui();
     this.initScene();
     this.animate(); // always call this.animate at the end of constructor
@@ -41,7 +43,6 @@ class Main extends AbstractApplication {
   }
 
   initScene() {
-    const controls = new Controls(this, this.scene, 1);
     this.renderer.setClearColor("#ffffff");
 
     const materials = new Array(this._colorPalette.size).fill(0).map(
@@ -77,6 +78,9 @@ class Main extends AbstractApplication {
         });
       }
     );
+
+    const terrain = new Terrain(this, this.renderer);
+    this.addToScene(terrain);
   }
 }
 

@@ -13,9 +13,9 @@ class AbstractApplication{
         70,                                     // vertial field of view
         window.innerWidth / window.innerHeight, // aspect ratio
         1,                                      // near plane
-        1000                                    // far plane
+        10000                                   // far plane
     );
-    this._camera.position.set( -1200, 800, 1200);
+    this._camera.position.set( 0, 0, 400);
 
     this._updateComponents = [];
 
