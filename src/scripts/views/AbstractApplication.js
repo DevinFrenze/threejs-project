@@ -15,7 +15,7 @@ class AbstractApplication{
         1,                                      // near plane
         1000                                    // far plane
     );
-    this._camera.position.z = 400;
+    this._camera.position.set( -1200, 800, 1200);
 
     this._updateComponents = [];
 
