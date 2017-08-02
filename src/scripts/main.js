@@ -14,7 +14,7 @@ import 'shaders/FilmShader';
 import 'shaders/RGBShiftShader';
 
 import 'postprocessing/FilmPass';
-import 'postprocessing/GlitchPass';
+import 'scripts/postprocessing/CustomGlitchPass';
 
 import 'loaders/AssimpJSONLoader';
 
