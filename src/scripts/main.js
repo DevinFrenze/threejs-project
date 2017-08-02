@@ -9,6 +9,7 @@ import AudioAnalyser from 'scripts/plugins/audioAnalyser';
 import Text from 'scripts/objects/text';
 import ColorPalette from 'scripts/objects/ColorPalette';
 import Terrain from 'scripts/objects/Terrain';
+import GridTexture from 'scripts/objects/GridTexture';
 
 require( 'loaders/AssimpJSONLoader' );
 
@@ -24,7 +25,7 @@ class Main extends AbstractApplication {
   constructor(dev = true){
     super(dev);
 
-    this.camera.position.set( 1000, 5000, 5000);
+    this.camera.position.set( 0, 0, 4700);
     this.camera.lookAt( new THREE.Vector3(0,0,0) );
     this.initGui();
     this.initScene();
@@ -58,10 +59,11 @@ class Main extends AbstractApplication {
     assimpJSONLoader.load(
       "/models/delfin_low.assimp.json",
       (obj) => {
-        const scale = 70;
+        const scale = 600;
         obj.scale.set(scale, scale, scale);
 
         const dolphins = new Array(this._colorPalette.size).fill(0);
+
         dolphins.map((val, index) => {
           const dolphin = obj.clone();
           dolphin.scale.set(scale, scale, scale);
@@ -72,7 +74,7 @@ class Main extends AbstractApplication {
             }
           });
 
-          dolphin.position.x = (index - ((this._colorPalette.size - 1) / 2)) * 100;
+          dolphin.position.x = (index - ((this._colorPalette.size - 1) / 2)) * 900;
 
           this.addToScene(dolphin);
         });
@@ -81,6 +83,8 @@ class Main extends AbstractApplication {
 
     const terrain = new Terrain(this, this.renderer);
     this.addToScene(terrain);
+
+    this.addToScene( new THREE.AmbientLight(0xffffff) );
   }
 }
 

@@ -1,6 +1,7 @@
 import 'BufferGeometryUtils';
 import 'shaders/NormalMapShader';
 import 'ShaderTerrain';
+import GridTexture from 'scripts/objects/GridTexture';
 
 var SCREEN_WIDTH = window.innerWidth;
 var SCREEN_HEIGHT = window.innerHeight;
@@ -40,7 +41,7 @@ class Terrain {
 
   initHeightAndNormalMaps() {
     //  creates heightMap, normalMap, and normalShader
-    const rx = 256, ry = 256;
+    const rx = 16, ry = 256;
     const pars = { minFilter: THREE.LinearFilter, magFilter: THREE.LinearFilter, format: THREE.RGBFormat };
 
     this.heightMap  = new THREE.WebGLRenderTarget( rx, ry, pars );
@@ -58,19 +59,36 @@ class Terrain {
 
   initTerrainShader() {
     // creates terrainShader and uniformsTerrain
+    const pars = { minFilter: THREE.LinearFilter, magFilter: THREE.LinearFilter, format: THREE.RGBFormat };
+    const loadingManager = new THREE.LoadingManager();
+
+    const specularMap = new THREE.WebGLRenderTarget( 2048, 2048, pars );
+    specularMap.texture.generateMipmaps = false;
+
+    const gridTex1 = new GridTexture(this.renderer);
+    const gridTex2 = new GridTexture(this.renderer, new THREE.Color(0, 155, 255));
+    const diffuseTexture1 = gridTex2.texture;
+    const diffuseTexture2 = gridTex1.texture;
+    diffuseTexture1.wrapS = diffuseTexture1.wrapT = THREE.RepeatWrapping;
+    diffuseTexture2.wrapS = diffuseTexture2.wrapT = THREE.RepeatWrapping;
+    specularMap.texture.wrapS = specularMap.texture.wrapT = THREE.RepeatWrapping;
+
     this.terrainShader = THREE.ShaderTerrain[ "terrain" ];
     const uniformsTerrain = this.uniformsTerrain = THREE.UniformsUtils.clone( this.terrainShader.uniforms );
     uniformsTerrain[ 'tNormal' ].value = this.normalMap.texture;
     uniformsTerrain[ 'uNormalScale' ].value = 3.5;
     uniformsTerrain[ 'tDisplacement' ].value = this.heightMap.texture;
+    uniformsTerrain[ 'tSpecular' ].value = specularMap.texture;
+    uniformsTerrain[ 'tDiffuse1' ].value = diffuseTexture1;
+    uniformsTerrain[ 'tDiffuse2' ].value = diffuseTexture2;
     uniformsTerrain[ 'enableDiffuse1' ].value = true;
     uniformsTerrain[ 'enableDiffuse2' ].value = true;
     uniformsTerrain[ 'enableSpecular' ].value = true;
     uniformsTerrain[ 'diffuse' ].value.setHex( 0xffffff );
     uniformsTerrain[ 'specular' ].value.setHex( 0xffffff );
     uniformsTerrain[ 'shininess' ].value = 30;
-    uniformsTerrain[ 'uDisplacementScale' ].value = 375;
-    uniformsTerrain[ 'uRepeatOverlay' ].value.set( 6, 6 );
+    uniformsTerrain[ 'uDisplacementScale' ].value = 2000;
+    uniformsTerrain[ 'uRepeatOverlay' ].value.set( 16, 16 );
   }
 
   initUniformsNoise() {
@@ -106,10 +124,10 @@ class Terrain {
 
   initTerrainMesh() {
     // creates terrain mesh
-    const geometryTerrain = new THREE.PlaneBufferGeometry( 6000, 6000, 256, 256 );
+    const geometryTerrain = new THREE.PlaneBufferGeometry( 8000, 8000, 256, 256 );
     THREE.BufferGeometryUtils.computeTangents( geometryTerrain );
     this.terrain = new THREE.Mesh( geometryTerrain, this.materialLibrary[ 'terrain' ] );
-    this.terrain.position.set( 0, -125, 0 );
+    this.terrain.position.set( 0, -500, 0 );
     this.terrain.rotation.x = -Math.PI / 2;
   }
 
@@ -120,8 +138,8 @@ class Terrain {
 
     this.animDelta = THREE.Math.clamp( this.animDelta + 0.00075 * this.animDeltaDir, 0, 0.05 );
     this.uniformsNoise[ 'time' ].value += delta * this.animDelta;
-    this.uniformsNoise[ 'offset' ].value.x += delta * 0.05;
-    this.uniformsTerrain[ 'uOffset' ].value.x = 4 * this.uniformsNoise[ 'offset' ].value.x;
+    this.uniformsNoise[ 'offset' ].value.y += delta * 0.05;
+    this.uniformsTerrain[ 'uOffset' ].value.y = 4 * this.uniformsNoise[ 'offset' ].value.y;
     this.quadTarget.material = this.materialLibrary[ 'heightmap' ];
     this.renderer.render( this.sceneRenderTarget, this.cameraOrtho, this.heightMap, true );
     this.quadTarget.material = this.materialLibrary[ 'normal' ];

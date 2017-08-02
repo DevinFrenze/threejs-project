@@ -9,6 +9,10 @@ class AbstractApplication{
 
   constructor(dev = true){
     this._scene = new THREE.Scene();
+
+    window.scene = this._scene;
+    window.THREE = THREE;
+
     this._camera = new THREE.PerspectiveCamera(
         70,                                     // vertial field of view
         window.innerWidth / window.innerHeight, // aspect ratio
