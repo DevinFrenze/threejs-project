@@ -6,7 +6,7 @@ class ObjectBank {
 
   constructor(updateContext, scene) {
     this.root = new THREE.Object3D();
-    this.root.position.set(0, 0, 1500);
+    this.root.position.set(0, 100, 1800);
     this.modelNum = 0;
     this.setCounters();
     this.rotateX = 0;
@@ -20,7 +20,7 @@ class ObjectBank {
 
     const models = [
       { path: "/models/eagle.json",     scale: 3000,  translate: 400 },
-      { path: "/models/dolphin.json",   scale: 1000,  translate: 0 },
+      // { path: "/models/dolphin.json",   scale: 1500,  translate: 0 },
       { path: "/models/statue.json",    scale: 15,    translate: -400 },
       { path: "/models/tree.json",      scale: 70,    translate: -200 },
       { path: "/models/dinosaur.json",  scale: 1500,  translate: -200 }

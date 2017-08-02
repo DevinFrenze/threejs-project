@@ -27,7 +27,7 @@ class Main extends AbstractApplication {
   constructor(dev = true){
     super(dev);
 
-    this.camera.position.set( 0, 0, 4700);
+    this.camera.position.set( 0, 200, 5600);
     this.camera.lookAt( new THREE.Vector3(0,0,0) );
     this.initGui();
     this.initScene();
@@ -82,13 +82,16 @@ class Main extends AbstractApplication {
     this.addToRenderChain( glitchPass );
 
     // adds horizontal lines to screen, looks rly good with rgbShift
-    const film = new THREE.FilmPass(0.35, 0.025, 648, false );
+    // scan lines max 0.5
+    // // noise max is 0.7, 
+    const film = new THREE.FilmPass(0.7, 0.5, 648, false );
     this.addToRenderChain( film );
 
+    // MAXIMUM is 0.003
     // RGB Shift will look rly good for vapor wave
-    const rgbShift = new THREE.ShaderPass( THREE.RGBShiftShader );
-    rgbShift.uniforms[ 'amount' ].value = 0.0015;
-    this.addToRenderChain( rgbShift );
+    this.rgbShift = new THREE.ShaderPass( THREE.RGBShiftShader );
+    this.rgbShift.uniforms[ 'amount' ].value = 0.003;
+    this.addToRenderChain( this.rgbShift );
   }
 }
 

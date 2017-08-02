@@ -43,6 +43,12 @@ class ColorPalette {
 
       color.setHSL(hsl.h, hsl.s, hsl.l);
     });
+
+    /*
+    setTimeout(() => {
+      this.generate(new THREE.Color(`hsl(${Math.random() * 100}, 100%, 50%)`));
+    }, Math.random() * 6000);
+    */
   }
 
   get size() {

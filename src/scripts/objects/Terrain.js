@@ -98,7 +98,7 @@ class Terrain {
     uniformsTerrain[ 'diffuse' ].value.setHex( 0xffffff );
     uniformsTerrain[ 'specular' ].value.setHex( 0xffffff );
     uniformsTerrain[ 'shininess' ].value = 30;
-    uniformsTerrain[ 'uDisplacementScale' ].value = 2000;
+    uniformsTerrain[ 'uDisplacementScale' ].value = 4500;
     uniformsTerrain[ 'uRepeatOverlay' ].value.set( 48, 16 );
   }
 
@@ -138,7 +138,7 @@ class Terrain {
     const geometryTerrain = new THREE.PlaneBufferGeometry( 24000, 8000, 256, 256 );
     THREE.BufferGeometryUtils.computeTangents( geometryTerrain );
     this.terrain = new THREE.Mesh( geometryTerrain, this.materialLibrary[ 'terrain' ] );
-    this.terrain.position.set( 0, -500, 0 );
+    this.terrain.position.set( 0, -1000, 0 );
     this.terrain.rotation.x = -Math.PI / 2;
   }
 
