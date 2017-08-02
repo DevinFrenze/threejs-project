@@ -7,7 +7,10 @@ var SCREEN_WIDTH = window.innerWidth;
 var SCREEN_HEIGHT = window.innerHeight;
 
 class Terrain {
-  constructor(updateContext, renderer) {
+  constructor(updateContext, renderer, floorColor, peakColor, lineColor) {
+    this.floorColor = floorColor;
+    this.peakColor = peakColor;
+    this.lineColor = lineColor;
     this.clock = new THREE.Clock();
     this.animDelta = 0;
     this.animDeltaDir = -1;
@@ -21,6 +24,7 @@ class Terrain {
     this.initTerrainMesh();
 
     updateContext.subscribeToUpdate(this);
+    window.addEventListener( 'resize', this.onWindowResize.bind(this), false );
 
     return this.terrain;
   }
@@ -29,7 +33,14 @@ class Terrain {
     // create scene target, camera, and plane
     this.sceneRenderTarget = new THREE.Scene();
 
-    this.cameraOrtho = new THREE.OrthographicCamera( SCREEN_WIDTH / - 2, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, SCREEN_HEIGHT / - 2, -10000, 10000 );
+    this.cameraOrtho = new THREE.OrthographicCamera(
+      window.innerWidth / - 2,
+      window.innerWidth / 2,
+      window.innerHeight / 2,
+      window.innerHeight / - 2,
+      -10000,
+      10000
+    );
     this.cameraOrtho.position.z = 100;
     this.sceneRenderTarget.add( this.cameraOrtho );
 
@@ -41,7 +52,7 @@ class Terrain {
 
   initHeightAndNormalMaps() {
     //  creates heightMap, normalMap, and normalShader
-    const rx = 16, ry = 256;
+    const rx = 48, ry = 256;
     const pars = { minFilter: THREE.LinearFilter, magFilter: THREE.LinearFilter, format: THREE.RGBFormat };
 
     this.heightMap  = new THREE.WebGLRenderTarget( rx, ry, pars );
@@ -65,10 +76,10 @@ class Terrain {
     const specularMap = new THREE.WebGLRenderTarget( 2048, 2048, pars );
     specularMap.texture.generateMipmaps = false;
 
-    const gridTex1 = new GridTexture(this.renderer);
-    const gridTex2 = new GridTexture(this.renderer, new THREE.Color(0, 155, 255));
-    const diffuseTexture1 = gridTex2.texture;
-    const diffuseTexture2 = gridTex1.texture;
+    this.gridTex1 = new GridTexture(this.renderer, this.peakColor, this.lineColor);
+    this.gridTex2 = new GridTexture(this.renderer, this.floorColor, this.lineColor);
+    const diffuseTexture1 = this.gridTex2.texture;
+    const diffuseTexture2 = this.gridTex1.texture;
     diffuseTexture1.wrapS = diffuseTexture1.wrapT = THREE.RepeatWrapping;
     diffuseTexture2.wrapS = diffuseTexture2.wrapT = THREE.RepeatWrapping;
     specularMap.texture.wrapS = specularMap.texture.wrapT = THREE.RepeatWrapping;
@@ -88,7 +99,7 @@ class Terrain {
     uniformsTerrain[ 'specular' ].value.setHex( 0xffffff );
     uniformsTerrain[ 'shininess' ].value = 30;
     uniformsTerrain[ 'uDisplacementScale' ].value = 2000;
-    uniformsTerrain[ 'uRepeatOverlay' ].value.set( 16, 16 );
+    uniformsTerrain[ 'uRepeatOverlay' ].value.set( 48, 16 );
   }
 
   initUniformsNoise() {
@@ -124,7 +135,7 @@ class Terrain {
 
   initTerrainMesh() {
     // creates terrain mesh
-    const geometryTerrain = new THREE.PlaneBufferGeometry( 8000, 8000, 256, 256 );
+    const geometryTerrain = new THREE.PlaneBufferGeometry( 24000, 8000, 256, 256 );
     THREE.BufferGeometryUtils.computeTangents( geometryTerrain );
     this.terrain = new THREE.Mesh( geometryTerrain, this.materialLibrary[ 'terrain' ] );
     this.terrain.position.set( 0, -500, 0 );
@@ -132,9 +143,14 @@ class Terrain {
   }
 
   update() {
+    this.gridTex1.update();
+    this.gridTex2.update();
+
     const delta = this.clock.getDelta();
     const time = Date.now() * 0.001;
     this.uniformsTerrain[ 'uNormalScale' ].value = THREE.Math.mapLinear( 1, 0, 1, 0.6, 3.5 );
+    this.uniformsTerrain[ 'tDiffuse1' ].value = this.gridTex1.texture;
+    this.uniformsTerrain[ 'tDiffuse2' ].value = this.gridTex2.texture;
 
     this.animDelta = THREE.Math.clamp( this.animDelta + 0.00075 * this.animDeltaDir, 0, 0.05 );
     this.uniformsNoise[ 'time' ].value += delta * this.animDelta;
@@ -144,6 +160,13 @@ class Terrain {
     this.renderer.render( this.sceneRenderTarget, this.cameraOrtho, this.heightMap, true );
     this.quadTarget.material = this.materialLibrary[ 'normal' ];
     this.renderer.render( this.sceneRenderTarget, this.cameraOrtho, this.normalMap, true );
+  }
+
+  onWindowResize() {
+    this.cameraOrtho.left = window.innerWidth / - 2;
+    this.cameraOrtho.right = window.innerWidth / 2;
+    this.cameraOrtho.top = window.innerHeight / 2;
+    this.cameraOrtho.bottom = window.innerHeight / - 2;
   }
 }
 

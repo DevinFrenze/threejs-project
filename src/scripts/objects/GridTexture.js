@@ -28,11 +28,10 @@ class GridTexture {
     const edgeVertical = new THREE.PlaneBufferGeometry( 0.1, 2 );
     const edgeHorizontal = new THREE.PlaneBufferGeometry( 2, 0.1 );
 
-    this.bgMaterial = new THREE.MeshBasicMaterial({ color: bgColor });
-    this.lineMaterial = new THREE.LineBasicMaterial({
-      color: lineColor,
-      linewidth: 500
-    });
+    this.bgMaterial = new THREE.MeshBasicMaterial();
+    this.bgMaterial.color = bgColor;
+    this.lineMaterial = new THREE.LineBasicMaterial();
+    this.lineMaterial.color = lineColor;
 
     this.planeMesh = new THREE.Mesh( plane, this.bgMaterial);
     this.edgeHorizontalMesh = new THREE.Mesh( edgeHorizontal, this.lineMaterial);
@@ -47,8 +46,11 @@ class GridTexture {
   }
 
   get texture() {
-    this.target.texture.repeat.set(0.1, 0.1);
     return this.target.texture;
+  }
+
+  update() {
+    this.renderer.render( this.scene, this.cameraOrtho, this.target, false );
   }
 }
 

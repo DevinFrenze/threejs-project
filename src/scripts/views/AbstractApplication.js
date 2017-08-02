@@ -9,6 +9,7 @@ class AbstractApplication{
 
   constructor(dev = true){
     this._scene = new THREE.Scene();
+    this._scene.fog = new THREE.Fog(0xffffff, 7700, 8700);
 
     window.scene = this._scene;
     window.THREE = THREE;

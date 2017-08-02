@@ -44,8 +44,6 @@ class Main extends AbstractApplication {
   }
 
   initScene() {
-    this.renderer.setClearColor("#ffffff");
-
     const materials = new Array(this._colorPalette.size).fill(0).map(
       (val, index) => {
         const meshMaterial = new MeshBasicMaterial({ side: THREE.DoubleSide });
@@ -81,10 +79,22 @@ class Main extends AbstractApplication {
       }
     );
 
-    const terrain = new Terrain(this, this.renderer);
+    const terrain = new Terrain(this, this.renderer,
+      this._colorPalette.color(0),
+      this._colorPalette.color(2),
+      this._colorPalette.color(1)
+    );
     this.addToScene(terrain);
 
     this.addToScene( new THREE.AmbientLight(0xffffff) );
+  }
+
+  update() {
+    this.renderer.setClearColor(this._colorPalette.color(4));
+    if (this.scene.fog) {
+      this.scene.fog.color = this._colorPalette.color(4);
+    }
+    super.update();
   }
 }
 
