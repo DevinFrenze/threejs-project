@@ -6,7 +6,7 @@ import AudioAnalyser from 'scripts/plugins/audioAnalyser';
 import Text from 'scripts/objects/text';
 import ColorPalette from 'scripts/objects/ColorPalette';
 import Terrain from 'scripts/objects/Terrain';
-import GridTexture from 'scripts/objects/GridTexture';
+import ObjectBank from 'scripts/objects/ObjectBank';
 
 import 'shaders/DigitalGlitch';
 import 'shaders/FXAAShader';
@@ -16,14 +16,11 @@ import 'shaders/RGBShiftShader';
 import 'postprocessing/FilmPass';
 import 'scripts/postprocessing/CustomGlitchPass';
 
-import 'loaders/AssimpJSONLoader';
-
 const {
   IcosahedronGeometry,
   Mesh,
   MeshBasicMaterial,
   ObjectLoader,
-  AssimpJSONLoader,
 } = THREE;
 
 class Main extends AbstractApplication {
@@ -41,65 +38,41 @@ class Main extends AbstractApplication {
   initGui() {
     const gui = new dat.GUI();
     this.uiColor1 = new UIColor(gui, "color1");
-    this._colorPalette = new ColorPalette(this.uiColor1.color);
+    this.colorPalette = new ColorPalette(this.uiColor1.color);
     this.uiButton1 = gui.add(this, 'generateColorPalette');
   }
 
   generateColorPalette() {
-    this._colorPalette.generate(this.uiColor1.color);
+    this.colorPalette.generate(this.uiColor1.color);
   }
 
   initScene() {
-    const materials = new Array(this._colorPalette.size).fill(0).map(
+    const materials = new Array(this.colorPalette.size).fill(0).map(
       (val, index) => {
         const meshMaterial = new MeshBasicMaterial({ side: THREE.DoubleSide });
-        meshMaterial.color = this._colorPalette.color(index);
+        meshMaterial.color = this.colorPalette.color(index);
         return meshMaterial;
       }
     );
 
-    const assimpJSONLoader = new AssimpJSONLoader();
-
-    assimpJSONLoader.load(
-      "/models/delfin_low.assimp.json",
-      (obj) => {
-        const scale = 600;
-        obj.scale.set(scale, scale, scale);
-
-        const dolphins = new Array(this._colorPalette.size).fill(0);
-
-        dolphins.map((val, index) => {
-          const dolphin = obj.clone();
-          dolphin.scale.set(scale, scale, scale);
-
-          dolphin.traverse((child) => {
-            if (child instanceof Mesh) {
-              child.material = materials[index];
-            }
-          });
-
-          dolphin.position.x = (index - ((this._colorPalette.size - 1) / 2)) * 900;
-
-          this.addToScene(dolphin);
-        });
-      }
-    );
+    this.objectBanks = new ObjectBank(this, this.scene);
 
     const terrain = new Terrain(this, this.renderer,
-      this._colorPalette.color(4),
-      this._colorPalette.color(3),
-      this._colorPalette.color(1)
+      this.colorPalette.color(4),
+      this.colorPalette.color(3),
+      this.colorPalette.color(1)
     );
     this.addToScene(terrain);
 
     this.addToScene( new THREE.AmbientLight(0xffffff) );
+    const pointLight = new THREE.PointLight(0xffffff);
+    pointLight.position.set(1000, 1000, 4500);
+    this.addToScene( pointLight );
   }
 
   update() {
-    this.renderer.setClearColor(this._colorPalette.color(0));
-    if (this.scene.fog) {
-      this.scene.fog.color = this._colorPalette.color(0);
-    }
+    this.renderer.setClearColor(this.colorPalette.color(0));
+    this.scene.fog.color = this.colorPalette.color(0);
     super.update();
   }
 
