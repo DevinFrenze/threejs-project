@@ -80,8 +80,8 @@ class Main extends AbstractApplication {
     );
 
     const terrain = new Terrain(this, this.renderer,
-      this._colorPalette.color(0),
-      this._colorPalette.color(2),
+      this._colorPalette.color(4),
+      this._colorPalette.color(3),
       this._colorPalette.color(1)
     );
     this.addToScene(terrain);
@@ -90,9 +90,9 @@ class Main extends AbstractApplication {
   }
 
   update() {
-    this.renderer.setClearColor(this._colorPalette.color(4));
+    this.renderer.setClearColor(this._colorPalette.color(0));
     if (this.scene.fog) {
-      this.scene.fog.color = this._colorPalette.color(4);
+      this.scene.fog.color = this._colorPalette.color(0);
     }
     super.update();
   }
