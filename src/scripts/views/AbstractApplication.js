@@ -24,7 +24,7 @@ class AbstractApplication{
 
     this._updateComponents = [];
 
-    this.initStats();
+    if (dev) this.initStats();
     this.initRenderer();
     this.initRenderChain();
     window.addEventListener( 'resize', this.onWindowResize.bind(this), false );

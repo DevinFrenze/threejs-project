@@ -23,11 +23,15 @@ const {
   ObjectLoader,
 } = THREE;
 
+const FILM_NOISE_MAX = 0.7;
+const FILM_SCANLINE_MAX = 0.5;
+const RGB_SHIFT_MAX = 0.004;
+
 class Main extends AbstractApplication {
-  constructor(dev = true){
+  constructor(dev = false){
     super(dev);
 
-    this.camera.position.set( 0, 200, 5600);
+    this.camera.position.set( 0, 200, 5550);
     this.camera.lookAt( new THREE.Vector3(0,0,0) );
     this.initGui();
     this.initScene();
@@ -36,10 +40,10 @@ class Main extends AbstractApplication {
   }
 
   initGui() {
-    const gui = new dat.GUI();
-    this.uiColor1 = new UIColor(gui, "color1");
-    this.colorPalette = new ColorPalette(this.uiColor1.color);
-    this.uiButton1 = gui.add(this, 'generateColorPalette');
+    // const gui = new dat.GUI();
+    // this.uiColor1 = new UIColor(gui, "color1");
+    this.colorPalette = new ColorPalette(this, new THREE.Color(0,1,1));
+    // this.uiButton1 = gui.add(this, 'generateColorPalette');
   }
 
   generateColorPalette() {
@@ -71,8 +75,16 @@ class Main extends AbstractApplication {
   }
 
   update() {
+
     this.renderer.setClearColor(this.colorPalette.color(0));
     this.scene.fog.color = this.colorPalette.color(0);
+
+    const now = Date.now();
+
+    this.filmPass.uniforms.nIntensity.value = Math.abs(Math.sin(now / 13000) * FILM_NOISE_MAX);
+    this.filmPass.uniforms.sIntensity.value = Math.abs(Math.sin(now / 17000) * FILM_SCANLINE_MAX);
+    this.rgbShift.uniforms['amount'].value = Math.sin(now / 19000) * RGB_SHIFT_MAX;
+
     super.update();
   }
 
@@ -83,14 +95,14 @@ class Main extends AbstractApplication {
 
     // adds horizontal lines to screen, looks rly good with rgbShift
     // scan lines max 0.5
-    // // noise max is 0.7, 
-    const film = new THREE.FilmPass(0.7, 0.5, 648, false );
-    this.addToRenderChain( film );
+    // noise max is 0.7, 
+    this.filmPass = new THREE.FilmPass(0.35, 0.025, 648, false );
+    this.addToRenderChain( this.filmPass );
 
     // MAXIMUM is 0.003
     // RGB Shift will look rly good for vapor wave
     this.rgbShift = new THREE.ShaderPass( THREE.RGBShiftShader );
-    this.rgbShift.uniforms[ 'amount' ].value = 0.003;
+    this.rgbShift.uniforms[ 'amount' ].value = 0.0015;
     this.addToRenderChain( this.rgbShift );
   }
 }
