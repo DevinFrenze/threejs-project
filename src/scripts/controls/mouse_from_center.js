@@ -4,8 +4,8 @@ const {
 } = THREE;
 
 class Controls {
-  constructor(updateContext, scene, speed = 1) {
-    this.scene = scene;
+  constructor(abstractApplication, speed = 1) {
+    this.scene = abstractApplication.scene;
     this.mouse = {};
     this.mouse.x = this.mouse.y = 0;
     this.onWindowResize();
@@ -14,7 +14,7 @@ class Controls {
     document.onmousemove = this.handleMouseMove.bind(this);
     window.addEventListener('resize', this.onWindowResize.bind(this), false);
 
-    updateContext.subscribeToUpdate(this);
+    abstractApplication.subscribeToUpdate(this);
   }
 
   handleMouseMove(event) {

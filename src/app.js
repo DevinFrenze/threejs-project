@@ -1,3 +1,3 @@
-import App from 'scripts/OlafBday';
+import App from 'scripts/main';
 
 new App(true);
