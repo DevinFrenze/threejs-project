@@ -1,5 +1,3 @@
-import Main from 'scripts/main';
-//import Main from 'scripts/mainWagner';
-//import Main from 'scripts/mainVR';
+import App from 'scripts/OlafBday';
 
-new Main();
+new App(true);
