@@ -2,6 +2,8 @@ import AbstractApplication from 'scripts/views/AbstractApplication';
 import 'utils/GeometryUtils';
 import UIColor from 'scripts/ui/ui_color';
 import Controls from 'scripts/controls/mouse_from_center';
+import ObjectArray from 'scripts/controls/object_array';
+import ObjectBelt from 'scripts/controls/object_belt';
 
 class Main extends AbstractApplication {
   constructor(){
@@ -25,13 +27,17 @@ class Main extends AbstractApplication {
   initScene() {
     this._material = new THREE.MeshBasicMaterial({ wireframe: false });
     const icoGeometry = new THREE.IcosahedronGeometry(100, 0);
-    this.addToScene(new THREE.Mesh(icoGeometry, this._material));
+    // this.addToScene(new THREE.Mesh(icoGeometry, this._material));
 
     const wireMaterial = new THREE.MeshBasicMaterial({
       wireframe: true,
       color: "#000000"
     });
-    this.addToScene(new THREE.Mesh(icoGeometry, wireMaterial));
+    // this.addToScene(new THREE.Mesh(icoGeometry, wireMaterial));
+
+    const objectArray = new ObjectArray(this, 13, 100);
+    const objectBelt = new ObjectBelt(this);
+    objectBelt.add(objectArray);
   }
 
   update() {
