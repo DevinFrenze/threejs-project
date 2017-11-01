@@ -4,6 +4,7 @@ class ColorPalette {
     this.generate(baseColor);
     updateContext.subscribeToUpdate(this);
 
+    this._resetDestinationColor = this.resetDestinationColor.bind(this);
     this.resetDestinationColor();
 
     this.interpColors(new THREE.Color(0,0,0), new THREE.Color(0, 1, 1));
@@ -12,7 +13,7 @@ class ColorPalette {
   resetDestinationColor() {
     console.log('reset destination color');
     this.destinationColor = new THREE.Color().setHSL(Math.random(), 1, 0.5);
-    setTimeout(this.resetDestinationColor.bind(this), 10000 + (Math.random() * 20000));
+    setTimeout(this._resetDestinationColor, 10000 + (Math.random() * 20000));
   }
 
   generate(baseColor) {

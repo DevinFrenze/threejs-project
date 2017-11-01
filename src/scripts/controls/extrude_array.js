@@ -1,6 +1,9 @@
-export default class ObjectArray extends THREE.Object3D {
+import ObjectArray from 'scripts/controls/object_array';
+
+export default class ExtrudeArray extends THREE.Object3D {
   constructor(
       abstractApplication,
+      points,
       copies = 7,
       radius = 100,
       angle = Math.PI * 2,
@@ -10,6 +13,7 @@ export default class ObjectArray extends THREE.Object3D {
   ) {
     super();
 
+    this.object = object;
     this.copies = copies;
     this.radius = radius;
     this.angle = angle;
@@ -23,12 +27,8 @@ export default class ObjectArray extends THREE.Object3D {
   }
 
   initChildren() {
-    let geometry = new THREE.BoxGeometry(10,10,100);
-    let material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-    let cube = new THREE.Mesh(geometry, material);
-
     for( let i = 0; i < this.copies; i++) {
-      let clone = cube.clone();
+      let clone = this.object.clone();
       this.add(clone);
     }
   }
