@@ -1,115 +1,92 @@
 import AbstractApplication from 'scripts/views/AbstractApplication';
 import 'utils/GeometryUtils';
-import DataMesh from 'scripts/objects/DataMesh';
-import ObjectBelt from 'scripts/controls/ObjectBelt';
+import UIColor from 'scripts/ui/ui_color';
+
+import AudioAnalyser from 'scripts/plugins/audioAnalyser';
+import Text from 'scripts/objects/text';
 import ColorPalette from 'scripts/objects/ColorPalette';
+import Terrain from 'scripts/objects/Terrain';
 
-import 'loaders/BinaryLoader';
+import 'shaders/DigitalGlitch';
+import 'shaders/FXAAShader';
+import 'shaders/FilmShader';
+import 'shaders/RGBShiftShader';
 import 'shaders/ConvolutionShader.js';
-import 'shaders/FilmShader.js';
-import 'shaders/FocusShader.js';
 import 'postprocessing/BloomPass.js';
-import 'postprocessing/FilmPass.js';
+import 'postprocessing/FilmPass';
 
-const { Vector3 } = THREE;
+const { MeshBasicMaterial } = THREE;
 
-class Main extends AbstractApplication {
-  constructor(){ super();
+const FILM_NOISE_MAX = 0.7;
+const FILM_SCANLINE_MAX = 0.5;
+const RGB_SHIFT_MAX = 0.004;
+
+class OlafBday extends AbstractApplication {
+  constructor(dev = false){
+    super(dev);
+
+    this.camera.position.set( 0, 200, 5550);
+    this.camera.lookAt( new THREE.Vector3(0,0,0) );
+    this.initGui();
     this.initScene();
     this.postProcessing();
-    this.animate();
+    this.animate(); // always call this.animate at the end of constructor
+  }
+
+  initGui() {
+    this.colorPalette = new ColorPalette(this, new THREE.Color(0,1,1), 10000);
   }
 
   initScene() {
-    this.colorPalette = new ColorPalette(this, new THREE.Color(0,1,1));
+    const materials = new Array(this.colorPalette.size).fill(0).map(
+      (val, index) => {
+        const meshMaterial = new MeshBasicMaterial({ side: THREE.DoubleSide });
+        meshMaterial.color = this.colorPalette.color(index);
+        return meshMaterial;
+      }
+    );
 
-    this.meshes = [];
-    this.scene.background = new THREE.Color( 0x000104 );
-    // this.scene.fog = new THREE.FogExp2( 0x000104, 0.0000675 );
+    const terrain = new Terrain(this, this.renderer,
+      this.colorPalette.color(4),
+      this.colorPalette.color(3),
+      this.colorPalette.color(1)
+    );
+    this.addToScene(terrain);
 
-    this.camera.position.set( 0, 700, 7000);
-    this.camera.lookAt( this.scene.position );
-
-    this.objectBelt = new ObjectBelt(this);
-    this._generateObject = this.generateObject.bind(this);
-    this.generateObject();
+    this.addToScene( new THREE.AmbientLight(0xffffff) );
+    this.scene.fog = new THREE.Fog(0xffffff, 7700, 8700);
   }
 
-  generateObject() {
-    const object = Math.floor(Math.random() * 4);
-    const loader = new THREE.BinaryLoader();
+  update() {
 
-    switch (object) {
-      case 0:
-        loader.load( "models/VeyronNoUv_bin.js", ( geometry ) => {
-          this.createDataMesh( geometry, 6.8, new Vector3(2200, -200, -100));
-        });
-        break;
-      case 1:
-        loader.load( "models/Female02_bin.js", ( geometry ) => {
-          this.createDataMesh( geometry, 4.05, new Vector3(250, -350, 2500));
-        });
-        break;
-      case 2:
-        loader.load( "models/Male02_bin.js", ( geometry ) => {
-          this.createDataMesh( geometry, 4.05, new Vector3(-250, -350, -1500));
-        });
-        break;
-      case 3:
-        this.createPlane();
-        break;
-      default: console.log('this should never happen');
-    }
+    this.renderer.setClearColor(this.colorPalette.color(0));
+    this.scene.fog.color = this.colorPalette.color(0);
 
-    setTimeout(this._generateObject, 1000 + (Math.random() * 2000));
+    const now = Date.now();
+
+    this.filmPass.uniforms.nIntensity.value = Math.abs(Math.sin(now / 13000) * FILM_NOISE_MAX);
+    this.filmPass.uniforms.sIntensity.value = Math.abs(Math.sin(now / 17000) * FILM_SCANLINE_MAX);
+    this.rgbShift.uniforms['amount'].value = Math.sin(now / 19000) * RGB_SHIFT_MAX;
+
+    super.update();
   }
 
   postProcessing() {
-    /*
-    const bloomPass = new THREE.BloomPass();
+    const bloomPass = new THREE.BloomPass(1.5);
     this.addToRenderChain(bloomPass);
 
-    const filmPass = new THREE.FilmPass( 0.5, 0.5, 1448, false );
-    this.addToRenderChain(filmPass);
+    // adds horizontal lines to screen, looks rly good with rgbShift
+    // scan lines max 0.5
+    // noise max is 0.7, 
+    this.filmPass = new THREE.FilmPass(0.35, 0.025, 648, false );
+    this.addToRenderChain( this.filmPass );
 
-    const focus = new THREE.ShaderPass( THREE.FocusShader );
-    focus.uniforms[ "screenWidth" ].value = window.innerWidth;
-    focus.uniforms[ "screenHeight" ].value = window.innerHeight;
-    this.addToRenderChain(focus);
-    */
-  }
-
-  randomColor() {
-    return this.colorPalette.color(Math.floor(Math.random() * 5));
-  }
-
-  randomXOffset() {
-    return (Math.random() - 0.5) * 5000;
-  }
-
-  randomYOffset() {
-    return (Math.random() - 0.5) * 2000;
-  }
-
-  createDataMesh( originalGeometry, scale) {
-    const dataMesh = new DataMesh(this, originalGeometry, scale, this.randomColor());
-    this.objectBelt.add(
-      dataMesh.mesh,
-      this.randomXOffset(),
-      this.randomYOffset()
-    );
-    this.meshes.push(dataMesh);
-  }
-
-  createPlane() {
-    const color = this.randomColor();
-    const scale = Math.random() * 2000;
-    const divisions = Math.floor(Math.random() * 5);
-    const gridHelper = new THREE.GridHelper( scale, divisions, color, color );
-    gridHelper.rotateY(Math.random() * Math.PI);
-    gridHelper.rotateZ(Math.random() * Math.PI);
-    this.objectBelt.add(gridHelper, this.randomXOffset(), this.randomYOffset());
+    // MAXIMUM is 0.003
+    // RGB Shift will look rly good for vapor wave
+    this.rgbShift = new THREE.ShaderPass( THREE.RGBShiftShader );
+    this.rgbShift.uniforms[ 'amount' ].value = 0.0015;
+    this.addToRenderChain( this.rgbShift );
   }
 }
 
-export default Main;
+export default OlafBday;

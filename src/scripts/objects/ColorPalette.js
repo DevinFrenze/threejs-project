@@ -1,7 +1,8 @@
 class ColorPalette {
-  constructor(updateContext, baseColor) {
+  constructor(updateContext, baseColor, rateOfChange = 20000) {
     this._colors = [];
     this.generate(baseColor);
+    this.rateOfChange = rateOfChange;
     updateContext.subscribeToUpdate(this);
 
     this._resetDestinationColor = this.resetDestinationColor.bind(this);
@@ -13,7 +14,9 @@ class ColorPalette {
   resetDestinationColor() {
     console.log('reset destination color');
     this.destinationColor = new THREE.Color().setHSL(Math.random(), 1, 0.5);
-    setTimeout(this._resetDestinationColor, 10000 + (Math.random() * 20000));
+    const { rateOfChange } = this;
+    const timeTillChange = (rateOfChange / 2) + (Math.random() * rateOfChange);
+    setTimeout(this._resetDestinationColor, timeTillChange);
   }
 
   generate(baseColor) {

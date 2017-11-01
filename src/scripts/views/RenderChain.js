@@ -17,6 +17,7 @@ export default class RenderChain extends Scene {
     this._renderer = new THREE.WebGLRenderer({ antialias: true });
     this._renderer.setPixelRatio( window.devicePixelRatio );
     this._renderer.setSize( window.innerWidth, window.innerHeight );
+    this._renderer.autoClear = false;
     document.body.appendChild( this._renderer.domElement );
   }
 

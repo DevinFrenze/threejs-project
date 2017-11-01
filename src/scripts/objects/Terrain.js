@@ -146,7 +146,7 @@ class Terrain {
     this.gridTex1.update();
     this.gridTex2.update();
 
-    const delta = this.clock.getDelta();
+    const delta = this.clock.getDelta() * 1.5;
     const time = Date.now() * 0.001;
     this.uniformsTerrain[ 'uNormalScale' ].value = THREE.Math.mapLinear( 1, 0, 1, 0.6, 3.5 );
     this.uniformsTerrain[ 'tDiffuse1' ].value = this.gridTex1.texture;
