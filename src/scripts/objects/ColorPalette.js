@@ -12,7 +12,6 @@ class ColorPalette {
   }
 
   resetDestinationColor() {
-    console.log('reset destination color');
     this.destinationColor = new THREE.Color().setHSL(Math.random(), 1, 0.5);
     const { rateOfChange } = this;
     const timeTillChange = (rateOfChange / 2) + (Math.random() * rateOfChange);

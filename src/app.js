@@ -1,3 +1,3 @@
-import App from 'scripts/apps/PolychainCancun';
+import App from 'scripts/apps/Smoke';
 
-new App();
+new App(true);

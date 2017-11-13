@@ -21,7 +21,7 @@ const FILM_NOISE_MAX = 0.7;
 const FILM_SCANLINE_MAX = 0.5;
 const RGB_SHIFT_MAX = 0.004;
 
-class OlafBday extends AbstractApplication {
+class PolyChain extends AbstractApplication {
   constructor(dev = false){
     super(dev);
 
@@ -89,4 +89,4 @@ class OlafBday extends AbstractApplication {
   }
 }
 
-export default OlafBday;
+export default PolyChain;
