@@ -1,38 +1,73 @@
 import AbstractApplication from 'scripts/views/AbstractApplication';
-import SmokeExample from 'scripts/apps/Smoke';
-import Smoke from 'scripts/objects/Smoke';
-import ColorPalette from 'scripts/objects/ColorPalette';
+import CubeScene from 'scripts/scenes/CubeScene';
+import ConeScene from 'scripts/scenes/ConeScene';
+import Renderer from 'scripts/scenes/Renderer';
+import FullScreenPlane from 'scripts/objects/FullScreenPlane';
 
-// NOTE: this program runs slow when antialiasing is turned on
 export default class MultipleSceneComposition extends AbstractApplication {
-  constructor(dev = true, width, height, renderToScreen = true){
-    super(dev, width, height, renderToScreen);
-    this.smokeScene1 = new SmokeExample(dev, 512, 512, false);
-    /*
-    this.camera.position.set( 0, 0, 1000);
-    this.camera.lookAt( new THREE.Vector3(0,0,0) );
-    this.initGui();
+  constructor(dev = true, width, height){
+    super(dev, width, height, true);
+
+    this.initBuffer();
     this.initScene();
-    this.animate(); // always call this.animate at the end of constructor
-    */
+    this.animate();
+    window.addEventListener( 'keyup', this.onKeyUp.bind(this), false);
   }
 
-  initGui() {
-    this.colorPalette = new ColorPalette(this, new THREE.Color(0,1,1), 10000);
+  update() {
+    this.renderer.render(
+      this.cubeScene.scene,
+      this.subCamera,
+      this.cubeSceneTarget
+    );
+
+    this.renderer.render(
+      this.coneScene.scene,
+      this.subCamera,
+      this.coneSceneTarget
+    );
+
+    super.update();
+  }
+
+  initBuffer() {
+    this.subCamera = new THREE.Camera( 70, this.width / this.height, 1, 1000);
+
+    this.cubeScene = new CubeScene(this);
+    this.cubeSceneTarget = new THREE.WebGLRenderTarget(
+      this.width,
+      this.height
+    );
+
+    this.coneScene = new ConeScene(this);
+    this.coneSceneTarget = new THREE.WebGLRenderTarget(
+      this.width,
+      this.height
+    );
+
+    this.targets = [this.cubeSceneTarget, this.coneSceneTarget];
+    this.currentTarget = this.targets[0];
   }
 
   initScene() {
-    const light = new THREE.DirectionalLight(0xffffff,0.5);
-    light.position.set(-1,0,1);
-    this.addToScene(light);
+    this.material = new THREE.MeshBasicMaterial(
+      { map: this.coneSceneTarget.texture }
+    );
+    this.plane = (new FullScreenPlane(this, this.material)).plane;
+    this.addToScene(this.plane);
+  }
 
-    const color1 = this.colorPalette.color(0);
-    this.smoke1 = new Smoke(this, 100, 0.8, color1);
-    this.smoke1.scale.set(0.75, 0.75, 0.75);
+  switchScenes() {
+    const index = this.targets.indexOf(this.currentTarget);
+    this.currentTarget = this.targets[(index + 1) % this.targets.length];
+    this.material.map = this.currentTarget.texture;
+    this.material.needsUpdate = true;
+  }
 
-    const color2 = this.colorPalette.color(2);
-    this.smoke2 = new Smoke(this, 150, 0.7, color2);
-    this.smoke2.scale.set(1.85, 1.85, 1);
-    this.smoke2.position.z = -500;
+  onKeyUp(e) {
+    if (e.key === ' ') {
+      console.log('spacebar');
+      this.switchScenes();
+    }
   }
 }

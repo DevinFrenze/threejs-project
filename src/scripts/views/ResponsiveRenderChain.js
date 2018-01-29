@@ -13,6 +13,7 @@ export default class ResponsiveRenderChain extends RenderChain {
   onWindowResize() {
     this.camera.aspect = this.width / this.height;
     this.camera.updateProjectionMatrix();
+    this.camera.position.set( 0, 0, this.calculateCameraOffset());
 
     this.renderer.setSize( this.width, this.height );
     this.composer.setSize( this.width, this.height );

@@ -25,7 +25,14 @@ export default class Scene {
         1,                        // near plane
         10000                     // far plane
     );
-    this._camera.position.set( 0, 0, 400);
+    this._camera.position.set( 0, 0, this.calculateCameraOffset());
+    this._camera.lookAt( new THREE.Vector3(0,0,0) );
+  }
+
+  calculateCameraOffset() {
+    const angle = 90 - (this.camera.fov / 2);
+    const z = 0.5 * this.height * Math.tan(Math.PI * angle / 180);
+    return z;
   }
 
   addToScene(obj) {
