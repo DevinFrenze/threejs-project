@@ -1,3 +1,3 @@
-import App from 'scripts/apps/Smoke';
+import App from 'scripts/apps/MultipleSceneComposition';
 
 new App(true);

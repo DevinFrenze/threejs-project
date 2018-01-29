@@ -1,15 +1,29 @@
+/*
+ * initializes the scene and camera
+ */
+
 export default class Scene {
-  constructor() {
+  constructor(width, height) {
+    this._width = width;
+    this._height = height;
     this._scene = new THREE.Scene();
     this.initCamera();
   }
 
+  get width() {
+    return this._width || window.innerWidth;
+  }
+
+  get height() {
+    return this._height || window.innerHeight;
+  }
+
   initCamera() {
     this._camera = new THREE.PerspectiveCamera(
-        70,                                     // vertial field of view
-        window.innerWidth / window.innerHeight, // aspect ratio
-        1,                                      // near plane
-        10000                                   // far plane
+        70,                       // vertial field of view
+        this.width / this.height, // aspect ratio
+        1,                        // near plane
+        10000                     // far plane
     );
     this._camera.position.set( 0, 0, 400);
   }

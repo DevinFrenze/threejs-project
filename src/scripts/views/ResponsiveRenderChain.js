@@ -1,16 +1,20 @@
+/*
+ * resizes the renderer, composer, and camera when window size changes
+ */
+
 import RenderChain from 'scripts/views/RenderChain';
 
 export default class ResponsiveRenderChain extends RenderChain {
-  constructor() {
-    super();
+  constructor(width, height, renderToScreen = true) {
+    super(width, height, renderToScreen);
     window.addEventListener( 'resize', this.onWindowResize.bind(this), false );
   }
 
   onWindowResize() {
-    this.camera.aspect = window.innerWidth / window.innerHeight;
+    this.camera.aspect = this.width / this.height;
     this.camera.updateProjectionMatrix();
 
-    this.renderer.setSize( window.innerWidth, window.innerHeight );
-    this.composer.setSize( window.innerWidth, window.innerHeight );
+    this.renderer.setSize( this.width, this.height );
+    this.composer.setSize( this.width, this.height );
   }
 }

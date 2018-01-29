@@ -23,8 +23,8 @@ const FILM_SCANLINE_MAX = 0.5;
 const RGB_SHIFT_MAX = 0.004;
 
 class OlafBday extends AbstractApplication {
-  constructor(dev = false){
-    super(dev);
+  constructor(width, height, dev = false){
+    super(width, height, dev);
 
     this.camera.position.set( 0, 200, 5550);
     this.camera.lookAt( new THREE.Vector3(0,0,0) );

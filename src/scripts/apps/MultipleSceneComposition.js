@@ -1,17 +1,20 @@
 import AbstractApplication from 'scripts/views/AbstractApplication';
+import SmokeExample from 'scripts/apps/Smoke';
 import Smoke from 'scripts/objects/Smoke';
 import ColorPalette from 'scripts/objects/ColorPalette';
 
 // NOTE: this program runs slow when antialiasing is turned on
-export default class SmokeExample extends AbstractApplication {
-  constructor(dev = true, width, height, renderToScreen = true) {
+export default class MultipleSceneComposition extends AbstractApplication {
+  constructor(dev = true, width, height, renderToScreen = true){
     super(dev, width, height, renderToScreen);
-
+    this.smokeScene1 = new SmokeExample(dev, 512, 512, false);
+    /*
     this.camera.position.set( 0, 0, 1000);
     this.camera.lookAt( new THREE.Vector3(0,0,0) );
     this.initGui();
     this.initScene();
     this.animate(); // always call this.animate at the end of constructor
+    */
   }
 
   initGui() {

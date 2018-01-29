@@ -2,8 +2,8 @@ import DevTools from 'scripts/views/DevTools';
 import ResponsiveRenderChain from 'scripts/views/ResponsiveRenderChain';
 
 class AbstractApplication extends ResponsiveRenderChain {
-  constructor(dev = true){
-    super();
+  constructor(dev = true, width, height, renderToScreen = true) {
+    super(width, height, renderToScreen);
     this.clock = new THREE.Clock();
     this._animate = this.animate.bind(this);
     this._componentsToUpdate = [];
