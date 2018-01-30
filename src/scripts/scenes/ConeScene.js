@@ -2,11 +2,9 @@ import Scene from 'scripts/scenes/Scene';
 
 export default class ConeScene extends Scene {
   constructor(updateContext) {
-    super();
-    updateContext.subscribeToUpdate(this);
+    super(updateContext);
 
     this.scene.background = new THREE.Color( 0x00ffff );
-    // const geometry = new THREE.BoxGeometry( 1, 1, 1);
     const geometry = new THREE.ConeGeometry( 5, 5, 5);
     const material = new THREE.MeshBasicMaterial(
       {

@@ -1,4 +1,5 @@
 import AbstractApplication from 'scripts/views/AbstractApplication';
+import CurveScene from 'scripts/scenes/CurveScene';
 import CubeScene from 'scripts/scenes/CubeScene';
 import ConeScene from 'scripts/scenes/ConeScene';
 import Renderer from 'scripts/scenes/Renderer';
@@ -15,6 +16,12 @@ export default class MultipleSceneComposition extends AbstractApplication {
   }
 
   update() {
+    this.renderer.render(
+      this.curveScene.scene,
+      this.subCamera,
+      this.curveSceneTarget
+    );
+
     this.renderer.render(
       this.cubeScene.scene,
       this.subCamera,
@@ -33,6 +40,12 @@ export default class MultipleSceneComposition extends AbstractApplication {
   initBuffer() {
     this.subCamera = new THREE.Camera( 70, this.width / this.height, 1, 1000);
 
+    this.curveScene = new CurveScene(this);
+    this.curveSceneTarget = new THREE.WebGLRenderTarget(
+      this.width,
+      this.height
+    );
+
     this.cubeScene = new CubeScene(this);
     this.cubeSceneTarget = new THREE.WebGLRenderTarget(
       this.width,
@@ -45,13 +58,13 @@ export default class MultipleSceneComposition extends AbstractApplication {
       this.height
     );
 
-    this.targets = [this.cubeSceneTarget, this.coneSceneTarget];
+    this.targets = [ this.curveSceneTarget, this.cubeSceneTarget, this.coneSceneTarget];
     this.currentTarget = this.targets[0];
   }
 
   initScene() {
     this.material = new THREE.MeshBasicMaterial(
-      { map: this.coneSceneTarget.texture }
+      { map: this.curveSceneTarget.texture }
     );
     this.plane = (new FullScreenPlane(this, this.material)).plane;
     this.addToScene(this.plane);
@@ -65,9 +78,6 @@ export default class MultipleSceneComposition extends AbstractApplication {
   }
 
   onKeyUp(e) {
-    if (e.key === ' ') {
-      console.log('spacebar');
-      this.switchScenes();
-    }
+    if (e.key === ' ') this.switchScenes();
   }
 }

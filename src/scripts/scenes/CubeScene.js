@@ -2,8 +2,7 @@ import Scene from 'scripts/scenes/Scene';
 
 export default class CubeScene extends Scene {
   constructor(updateContext) {
-    super();
-    updateContext.subscribeToUpdate(this);
+    super(updateContext);
 
     this.scene.background = new THREE.Color( 0xff0000 );
     const geometry = new THREE.BoxGeometry( 1, 1, 1);

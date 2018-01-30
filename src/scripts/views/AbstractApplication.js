@@ -27,7 +27,10 @@ class AbstractApplication extends ResponsiveRenderChain {
 
   update() {
     this.delta = this.clock.getDelta();
-    this._componentsToUpdate.forEach((component) => component.update(this.delta));
+    this.elapsedTime = this.clock.getElapsedTime();
+    this._componentsToUpdate.forEach(
+      (component) => component.update(this.delta, this.elapsedTime)
+    );
   }
 }
 export default AbstractApplication;
