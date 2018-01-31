@@ -4,7 +4,7 @@ export default class ConeScene extends Scene {
   constructor(updateContext) {
     super(updateContext);
 
-    this.scene.background = new THREE.Color( 0x00ffff );
+    // this.scene.background = new THREE.Color( 0x00ffff );
     const geometry = new THREE.ConeGeometry( 300, 300, 300);
     const material = new THREE.MeshBasicMaterial(
       {

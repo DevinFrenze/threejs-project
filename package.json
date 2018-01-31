@@ -1,7 +1,7 @@
 {
   "scripts": {
     "start": "webpack --config config/webpack.dev.js | webpack-dev-server --port 8080 --config config/webpack.dev.js --hot --history-api-fallback --progress --colors --inline --content-base ./build",
-    "build": "webpack --config config/webpack.dev.js --progress --profile --colors",
+    "build": "webpack --config config/webpack.prod.js --progress --profile --colors",
     "eslint": "eslint ./src --fix"
   },
   "license": "WTFPL",

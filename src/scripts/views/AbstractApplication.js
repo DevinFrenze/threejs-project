@@ -18,6 +18,7 @@ class AbstractApplication extends ResponsiveRenderChain {
   animate(timestamp) {
     requestAnimationFrame( this._animate );
     this.update();
+    // this.renderer.clear();
     this.composer.render();
   }
 

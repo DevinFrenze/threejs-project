@@ -1,22 +1,27 @@
 import AbstractApplication from 'scripts/views/AbstractApplication';
+
+import FullScreenPlane from 'scripts/objects/FullScreenPlane';
+
+import MaskScene from 'scripts/scenes/MaskScene';
 import CurveScene from 'scripts/scenes/CurveScene';
 import CubeScene from 'scripts/scenes/CubeScene';
 import ConeScene from 'scripts/scenes/ConeScene';
-import Renderer from 'scripts/scenes/Renderer';
-import FullScreenPlane from 'scripts/objects/FullScreenPlane';
+
+import 'postprocessing/ClearPass';
+import 'postprocessing/TexturePass';
+import 'postprocessing/ShaderPass';
+import 'postprocessing/MaskPass';
 
 export default class MultipleSceneComposition extends AbstractApplication {
   constructor(dev = true, width, height){
     super(dev, width, height, true);
 
-    this.initBuffer();
+    this.renderer.setClearColor( 0xdddddd );
     this.initScene();
     this.animate();
-    window.addEventListener( 'keyup', this.onKeyUp.bind(this), false);
   }
 
   update() {
-
     this.scenes.forEach( (scene) => {
       this.renderer.render(
         scene.scene,
@@ -29,27 +34,34 @@ export default class MultipleSceneComposition extends AbstractApplication {
     super.update();
   }
 
-  initBuffer() {
-    this.scenes = [ new CurveScene(this), new CubeScene(this), new ConeScene(this) ];
-    this.currentScene = this.scenes[0];
-  }
-
   initScene() {
-    this.material = new THREE.MeshBasicMaterial(
-      { map: this.currentScene.renderTarget.texture }
-    );
-    this.plane = (new FullScreenPlane(this, this.material)).plane;
-    this.addToScene(this.plane);
+    this.scenes = [
+      new CurveScene(this),
+      new CubeScene(this),
+      new ConeScene(this),
+      new CurveScene(this),
+      new CubeScene(this),
+      new ConeScene(this)
+    ];
+
+    const clearPass = new THREE.ClearPass();
+    this.composer.addPass( clearPass );
+
+    this.masks = this.scenes.map((scene, i) => new MaskScene(this, scene, i));
+
+    const outputPass = new THREE.ShaderPass( THREE.CopyShader );
+    outputPass.renderToScreen = true;
+    this.composer.addPass( outputPass );
   }
 
-  switchScenes() {
-    const index = this.scenes.indexOf(this.currentScene);
-    this.currentScene = this.scenes[(index + 1) % this.scenes.length];
-    this.material.map = this.currentScene.renderTarget.texture;
-    this.material.needsUpdate = true;
+
+  initRenderChain() {
+    this.renderTarget = new THREE.WebGLRenderTarget( this.width, this.height );
+    this._composer = new THREE.EffectComposer( this.renderer, this.renderTarget );
   }
 
-  onKeyUp(e) {
-    if (e.key === ' ') this.switchScenes();
+  onWindowResize() {
+    super.onWindowResize();
+    this.renderTarget.setSize( this.width, this.height );
   }
 }

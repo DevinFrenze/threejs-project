@@ -4,8 +4,6 @@
 
 export default class Scene {
   constructor(updateContext) {
-    this.width = window.innerWidth;
-    this.height = window.innerHeight;
     this._scene = new THREE.Scene();
     this.initCamera();
     this.initRenderTarget();
@@ -44,4 +42,14 @@ export default class Scene {
   get scene() { return this._scene; }
   get camera() { return this._camera; }
   get renderTarget() { return this._renderTarget; }
+  get width() { return window.innerWidth; }
+  get height() { return window.innerHeight; }
+
+  onWindowResize() {
+    this.camera.aspect = this.width / this.height;
+    this.camera.updateProjectionMatrix();
+    this.camera.position.set( 0, 0, this.calculateCameraOffset());
+
+    this.renderTarget.setSize( this.width, this.height );
+  }
 }

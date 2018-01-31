@@ -13,8 +13,6 @@
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.6.2/dat.gui.min.js"></script>
 </head>
 <body>
-{% for (var chunk in o.htmlWebpackPlugin.files.chunks) { %}
 <script src="./{%=o.htmlWebpackPlugin.files.chunks[chunk].entry %}"></script>
-{% } %}
 </body>
 </html>
