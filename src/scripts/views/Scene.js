@@ -27,6 +27,7 @@ export default class Scene {
     );
     this._camera.position.set( 0, 0, this.calculateCameraOffset());
     this._camera.lookAt( new THREE.Vector3(0,0,0) );
+    this.addToScene(this._camera);
   }
 
   calculateCameraOffset() {

@@ -3,7 +3,6 @@ export default class FullScreenPlane {
     this.updateContext = updateContext;
     updateContext.subscribeToUpdate(this);
     const geometry = new THREE.PlaneGeometry(1, 1);
-    console.log(geometry.faceVertexUvs);
     this._plane = new THREE.Mesh( geometry, material );
   }
 

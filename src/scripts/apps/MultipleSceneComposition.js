@@ -16,64 +16,36 @@ export default class MultipleSceneComposition extends AbstractApplication {
   }
 
   update() {
-    this.renderer.render(
-      this.curveScene.scene,
-      this.subCamera,
-      this.curveSceneTarget
-    );
 
-    this.renderer.render(
-      this.cubeScene.scene,
-      this.subCamera,
-      this.cubeSceneTarget
-    );
-
-    this.renderer.render(
-      this.coneScene.scene,
-      this.subCamera,
-      this.coneSceneTarget
-    );
+    this.scenes.forEach( (scene) => {
+      this.renderer.render(
+        scene.scene,
+        scene.camera,
+        scene.renderTarget,
+        true
+      );
+    });
 
     super.update();
   }
 
   initBuffer() {
-    this.subCamera = new THREE.Camera( 70, this.width / this.height, 1, 1000);
-
-    this.curveScene = new CurveScene(this);
-    this.curveSceneTarget = new THREE.WebGLRenderTarget(
-      this.width,
-      this.height
-    );
-
-    this.cubeScene = new CubeScene(this);
-    this.cubeSceneTarget = new THREE.WebGLRenderTarget(
-      this.width,
-      this.height
-    );
-
-    this.coneScene = new ConeScene(this);
-    this.coneSceneTarget = new THREE.WebGLRenderTarget(
-      this.width,
-      this.height
-    );
-
-    this.targets = [ this.curveSceneTarget, this.cubeSceneTarget, this.coneSceneTarget];
-    this.currentTarget = this.targets[0];
+    this.scenes = [ new CurveScene(this), new CubeScene(this), new ConeScene(this) ];
+    this.currentScene = this.scenes[0];
   }
 
   initScene() {
     this.material = new THREE.MeshBasicMaterial(
-      { map: this.curveSceneTarget.texture }
+      { map: this.currentScene.renderTarget.texture }
     );
     this.plane = (new FullScreenPlane(this, this.material)).plane;
     this.addToScene(this.plane);
   }
 
   switchScenes() {
-    const index = this.targets.indexOf(this.currentTarget);
-    this.currentTarget = this.targets[(index + 1) % this.targets.length];
-    this.material.map = this.currentTarget.texture;
+    const index = this.scenes.indexOf(this.currentScene);
+    this.currentScene = this.scenes[(index + 1) % this.scenes.length];
+    this.material.map = this.currentScene.renderTarget.texture;
     this.material.needsUpdate = true;
   }
 

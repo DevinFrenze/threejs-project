@@ -5,7 +5,7 @@ export default class ConeScene extends Scene {
     super(updateContext);
 
     this.scene.background = new THREE.Color( 0x00ffff );
-    const geometry = new THREE.ConeGeometry( 5, 5, 5);
+    const geometry = new THREE.ConeGeometry( 300, 300, 300);
     const material = new THREE.MeshBasicMaterial(
       {
         color: 0xff00ff,
@@ -19,5 +19,6 @@ export default class ConeScene extends Scene {
 
   update(delta) {
     this.cone.rotation.z += delta * 0.5;
+    this.cone.rotation.y += delta * 0.5;
   }
 }
