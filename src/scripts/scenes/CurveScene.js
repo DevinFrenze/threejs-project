@@ -9,7 +9,7 @@ export default class CurveScene extends Scene {
     this.radius = 300;
 
     const geometry = new THREE.CircleGeometry( this.radius, 100, 0, this.thetaLength );
-    const material = new THREE.MeshBasicMaterial( { color: 0x000000 });
+    const material = new THREE.MeshBasicMaterial( { color: 0x00ffff });
     this.curve = new THREE.Mesh(geometry, material);
     this.addToScene(this.curve);
   }

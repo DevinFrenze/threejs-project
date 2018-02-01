@@ -1,17 +1,18 @@
 const DEFAULT_NUMBER_OF_SMOKE_PARTICLES = 150;
 
 export default class Smoke extends THREE.Object3D {
-  constructor(abstractApplication,
+  constructor(
       numParticles = DEFAULT_NUMBER_OF_PARTICLES,
       speed = 1,
-      color
+      spread = 250,
+      color = new THREE.Color(0xffffff)
     ) {
     super();
 
     this._speed = speed;
+    this._spread = spread;
+    this.name = 'smoke';
     this.initGeometry(numParticles, color);
-    abstractApplication.addToScene(this);
-    abstractApplication.subscribeToUpdate(this);
   }
 
   initGeometry(numParticles, color) {
@@ -21,6 +22,7 @@ export default class Smoke extends THREE.Object3D {
       map: smokeTexture,
       transparent: true
     });
+
     // setting color outside of constructor links changes to color
     smokeMaterial.color = color;
     const smokeGeo = new THREE.PlaneGeometry(300,300);
@@ -29,9 +31,9 @@ export default class Smoke extends THREE.Object3D {
     for (let p = 0; p < numParticles; p++) {
       let particle = new THREE.Mesh(smokeGeo,smokeMaterial);
       particle.position.set(
-        Math.random() * 500 - 250,
-        Math.random() * 500 - 250,
-        Math.random() * 1000 - 100
+        Math.random() * this._spread - (this._spread / 2),
+        Math.random() * this._spread - (this._spread / 2),
+        Math.random() * this._spread * 2 - (this._spread / 5)
       );
       particle.rotation.z = Math.random() * 360;
       this.add(particle);
@@ -39,18 +41,14 @@ export default class Smoke extends THREE.Object3D {
     }
   }
 
-  get speed() {
-    this._speed;
-  }
-
-  set speed(speed) {
-    this._speed = speed;
-  }
-
   update(delta) {
     let sp = this.smokeParticles.length;
     while (sp--) {
-      this.smokeParticles[sp].rotation.z += (delta * 0.2 * this._speed);
+      this.smokeParticles[sp].rotateZ(delta * 0.2 * this._speed);
     }
   }
+
+  get spread() { this._spread; }
+  get speed() { this._speed; }
+  set speed(speed) { this._speed = speed; }
 }

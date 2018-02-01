@@ -6,6 +6,7 @@ import MaskScene from 'scripts/scenes/MaskScene';
 import CurveScene from 'scripts/scenes/CurveScene';
 import CubeScene from 'scripts/scenes/CubeScene';
 import ConeScene from 'scripts/scenes/ConeScene';
+import SmokeScene from 'scripts/scenes/SmokeScene';
 
 import 'postprocessing/ClearPass';
 import 'postprocessing/TexturePass';
@@ -16,7 +17,7 @@ export default class MultipleSceneComposition extends AbstractApplication {
   constructor(dev = true, width, height){
     super(dev, width, height, true);
 
-    this.renderer.setClearColor( 0xdddddd );
+    this.renderer.setClearColor( 0x000000 );
     this.initScene();
     this.animate();
   }
@@ -36,12 +37,10 @@ export default class MultipleSceneComposition extends AbstractApplication {
 
   initScene() {
     this.scenes = [
-      new CurveScene(this),
+      // new CurveScene(this),
       new CubeScene(this),
-      new ConeScene(this),
-      new CurveScene(this),
-      new CubeScene(this),
-      new ConeScene(this)
+      new SmokeScene(this),
+      // new ConeScene(this)
     ];
 
     const clearPass = new THREE.ClearPass();

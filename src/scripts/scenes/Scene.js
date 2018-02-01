@@ -19,6 +19,7 @@ export default class Scene {
     );
     this._camera.position.set( 0, 0, this.calculateCameraOffset());
     this._camera.lookAt( new THREE.Vector3(0, 0, 0) );
+    this._camera.name = 'camera';
     this.scene.add(this.camera);
   }
 
@@ -30,7 +31,7 @@ export default class Scene {
     );
   }
 
-  update(delta) {}
+  update(delta, elapsedTime) { /* implement */ }
 
   calculateCameraOffset() {
     const angle = 90 - (this.camera.fov / 2);

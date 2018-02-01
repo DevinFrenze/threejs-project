@@ -4,10 +4,10 @@ export default class CurveScene extends Scene {
   constructor(updateContext, scene, i) {
     super(updateContext);
 
-    const thetaLength = 0.33 * Math.PI;
+    const thetaLength = 1 * Math.PI;
     const thetaStart = i * thetaLength;
 
-    const geometry = new THREE.CircleGeometry( 300, 100, thetaStart, thetaLength );
+    const geometry = new THREE.CircleGeometry( 500, 100, thetaStart, thetaLength );
     this.curve = new THREE.Mesh(geometry);
     this.scene.add(this.curve);
 
