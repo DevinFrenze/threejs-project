@@ -1,6 +1,4 @@
 import Scene from 'scripts/scenes/Scene';
-import { MeshLine, MeshLineMaterial } from 'three.meshline';
-import 'ParametricGeometries';
 
 export default class SphereScene extends Scene {
   constructor(updateContext) {
@@ -8,14 +6,15 @@ export default class SphereScene extends Scene {
 
     const totalSlices = 60;
     const sliceSize = 2 * Math.PI / totalSlices;
-    const rows = 16;
-    const radius = 450;
+    const rows = 10;
+    const radius = 220;
 
-    const geometry = new THREE.CircleGeometry( radius, totalSlices);
-    const material = new THREE.MeshBasicMaterial({ color: 0xffffff });
-    const circle = new THREE.Mesh(geometry, material);
-    this.addToScene(circle);
     this.parentObject = new THREE.Object3D();
+
+    const geo = new THREE.CircleBufferGeometry(radius, 100);
+    const mat = new THREE.MeshBasicMaterial({ color: 0xffffff });
+    const circle = new THREE.Mesh(geo, mat);
+    this.scene.add(circle);
 
     this.pieceMaterial = new THREE.MeshBasicMaterial({ color: new THREE.Color(0x000000) });
     for (let i = 0; i < totalSlices; i++) {
@@ -47,7 +46,7 @@ export default class SphereScene extends Scene {
 
   createCirclePiece(innerRadius, outerRadius, thetaStart, thetaLength, gap) {
     const gapSize = gap * outerRadius;
-    const geometry = new THREE.RingGeometry(
+    const geometry = new THREE.RingBufferGeometry(
       innerRadius, outerRadius - gapSize,
       1, 3,
       thetaStart, thetaLength - gap
@@ -57,6 +56,6 @@ export default class SphereScene extends Scene {
   }
 
   update(delta) {
-    this.parentObject.rotateZ( delta * -0.25 );
+    this.parentObject.rotateZ( delta * 0.05 );
   }
 }

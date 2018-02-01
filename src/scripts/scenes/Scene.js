@@ -27,7 +27,10 @@ export default class Scene {
     this._renderTarget = new THREE.WebGLRenderTarget(
       this.width,
       this.height,
-      { format:  THREE.RGBAFormat }
+      {
+        format: THREE.RGBAFormat,
+        depthBuffer: false
+      }
     );
   }
 

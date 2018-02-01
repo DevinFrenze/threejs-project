@@ -5,7 +5,7 @@ export default class Smoke extends THREE.Object3D {
       numParticles = DEFAULT_NUMBER_OF_PARTICLES,
       speed = 1,
       spread = 250,
-      color = new THREE.Color(0xffffff)
+      color = new THREE.Color(0x000000)
     ) {
     super();
 
