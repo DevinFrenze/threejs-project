@@ -4,7 +4,6 @@ export default class CubeScene extends Scene {
   constructor(updateContext) {
     super(updateContext);
 
-    // this.scene.background = new THREE.Color( 0xff0000 );
     const geometry = new THREE.BoxGeometry( 300, 300, 300);
     const material = new THREE.MeshBasicMaterial(
       {

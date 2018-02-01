@@ -7,6 +7,7 @@ import CurveScene from 'scripts/scenes/CurveScene';
 import CubeScene from 'scripts/scenes/CubeScene';
 import ConeScene from 'scripts/scenes/ConeScene';
 import SmokeScene from 'scripts/scenes/SmokeScene';
+import SphereScene from 'scripts/scenes/SphereScene';
 
 import 'postprocessing/ClearPass';
 import 'postprocessing/TexturePass';
@@ -17,6 +18,7 @@ export default class MultipleSceneComposition extends AbstractApplication {
   constructor(dev = true, width, height){
     super(dev, width, height, true);
 
+    // TODO add RingGeometries
     this.renderer.setClearColor( 0x000000 );
     this.initScene();
     this.animate();
@@ -38,7 +40,8 @@ export default class MultipleSceneComposition extends AbstractApplication {
   initScene() {
     this.scenes = [
       // new CurveScene(this),
-      new CubeScene(this),
+      // new CubeScene(this),
+      new SphereScene(this),
       new SmokeScene(this),
       // new ConeScene(this)
     ];
