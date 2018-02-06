@@ -1,5 +1,3 @@
-import App from 'scripts/apps/MultipleSceneComposition';
-// TODO fix smoke app
-// import App from 'scripts/apps/Smoke';
+import App from 'scripts/apps/LoadModel';
 
-new App(false);
+new App(true);
